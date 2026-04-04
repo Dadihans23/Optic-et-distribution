@@ -5,23 +5,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>{% block title %}Admin — Optique & Distribution{% endblock %}</title>
-  <script>
-    tailwind = { config: {
-      theme: {
-        extend: {
-          colors: {
-            primary:  { DEFAULT: '#1E88E5', dark: '#1565C0', light: '#42A5F5' },
-            accent:   { DEFAULT: '#EF6C00', light: '#FFA726' },
-            sidebar:  { DEFAULT: '#0F172A', hover: '#1E293B', active: '#1E3A5F' },
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-          }
-        }
-      }
-    }}
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="{% static 'css/tailwind.css' %}" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
