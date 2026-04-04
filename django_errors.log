@@ -1,0 +1,105 @@
+[2026-04-04 19:57:53,419] ERROR views — Erreur login : Token used too early, 1775325472 < 1775325485. Check that your computer's clock is set correctly.
+Traceback (most recent call last):
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\_token_gen.py", line 396, in verify
+    verified_claims = google.oauth2.id_token.verify_token(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\google\oauth2\id_token.py", line 153, in verify_token
+    return jwt.decode(
+           ^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\google\auth\jwt.py", line 302, in decode
+    _verify_iat_and_exp(payload, clock_skew_in_seconds)
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\google\auth\jwt.py", line 216, in _verify_iat_and_exp
+    raise exceptions.InvalidValue(
+google.auth.exceptions.InvalidValue: Token used too early, 1775325472 < 1775325485. Check that your computer's clock is set correctly.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\apps\authentication\views.py", line 61, in login_view
+    decoded = verify_token(payload['idToken'])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\apps\core\firebase.py", line 23, in verify_token
+    return auth.verify_id_token(id_token)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\auth.py", line 227, in verify_id_token
+    return client.verify_id_token(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\_auth_client.py", line 130, in verify_id_token
+    verified_claims = self._token_verifier.verify_id_token(id_token, clock_skew_seconds)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\_token_gen.py", line 293, in verify_id_token
+    return self.id_token_verifier.verify(id_token, self.request, clock_skew_seconds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\_token_gen.py", line 409, in verify
+    raise self._invalid_token_error(str(error), cause=error)
+firebase_admin._auth_utils.InvalidIdTokenError: Token used too early, 1775325472 < 1775325485. Check that your computer's clock is set correctly.
+[2026-04-04 19:58:08,432] ERROR views — Erreur login : Token used too early, 1775325488 < 1775325504. Check that your computer's clock is set correctly.
+Traceback (most recent call last):
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\_token_gen.py", line 396, in verify
+    verified_claims = google.oauth2.id_token.verify_token(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\google\oauth2\id_token.py", line 153, in verify_token
+    return jwt.decode(
+           ^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\google\auth\jwt.py", line 302, in decode
+    _verify_iat_and_exp(payload, clock_skew_in_seconds)
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\google\auth\jwt.py", line 216, in _verify_iat_and_exp
+    raise exceptions.InvalidValue(
+google.auth.exceptions.InvalidValue: Token used too early, 1775325488 < 1775325504. Check that your computer's clock is set correctly.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\apps\authentication\views.py", line 61, in login_view
+    decoded = verify_token(payload['idToken'])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\apps\core\firebase.py", line 23, in verify_token
+    return auth.verify_id_token(id_token)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\auth.py", line 227, in verify_id_token
+    return client.verify_id_token(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\_auth_client.py", line 130, in verify_id_token
+    verified_claims = self._token_verifier.verify_id_token(id_token, clock_skew_seconds)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\_token_gen.py", line 293, in verify_id_token
+    return self.id_token_verifier.verify(id_token, self.request, clock_skew_seconds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\_token_gen.py", line 409, in verify
+    raise self._invalid_token_error(str(error), cause=error)
+firebase_admin._auth_utils.InvalidIdTokenError: Token used too early, 1775325488 < 1775325504. Check that your computer's clock is set correctly.
+[2026-04-04 19:58:53,006] ERROR views — Erreur login : Token used too early, 1775325532 < 1775325547. Check that your computer's clock is set correctly.
+Traceback (most recent call last):
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\_token_gen.py", line 396, in verify
+    verified_claims = google.oauth2.id_token.verify_token(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\google\oauth2\id_token.py", line 153, in verify_token
+    return jwt.decode(
+           ^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\google\auth\jwt.py", line 302, in decode
+    _verify_iat_and_exp(payload, clock_skew_in_seconds)
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\google\auth\jwt.py", line 216, in _verify_iat_and_exp
+    raise exceptions.InvalidValue(
+google.auth.exceptions.InvalidValue: Token used too early, 1775325532 < 1775325547. Check that your computer's clock is set correctly.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\apps\authentication\views.py", line 61, in login_view
+    decoded = verify_token(payload['idToken'])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\apps\core\firebase.py", line 23, in verify_token
+    return auth.verify_id_token(id_token)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\auth.py", line 227, in verify_id_token
+    return client.verify_id_token(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\_auth_client.py", line 130, in verify_id_token
+    verified_claims = self._token_verifier.verify_id_token(id_token, clock_skew_seconds)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\_token_gen.py", line 293, in verify_id_token
+    return self.id_token_verifier.verify(id_token, self.request, clock_skew_seconds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP I7\Desktop\Optic Vison\web_platform\venv\Lib\site-packages\firebase_admin\_token_gen.py", line 409, in verify
+    raise self._invalid_token_error(str(error), cause=error)
+firebase_admin._auth_utils.InvalidIdTokenError: Token used too early, 1775325532 < 1775325547. Check that your computer's clock is set correctly.

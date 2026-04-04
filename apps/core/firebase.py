@@ -20,4 +20,5 @@ def get_db():
 
 def verify_token(id_token: str) -> dict:
     get_firebase_app()
-    return auth.verify_id_token(id_token)
+    # clock_skew_seconds tolère un décalage d'horloge entre le serveur et Firebase
+    return auth.verify_id_token(id_token, clock_skew_seconds=60)
