@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: optic-vision-web
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: FIREBASE_CREDENTIALS_PATH
+        value: /etc/secrets/firebase_credentials.json
+      - key: FIREBASE_WEB_API_KEY
+        sync: false
+      - key: SESSION_COOKIE_AGE
+        value: "28800"
+    secretFiles:
+      - name: firebase_credentials.json
+        mountPath: /etc/secrets/firebase_credentials.json
