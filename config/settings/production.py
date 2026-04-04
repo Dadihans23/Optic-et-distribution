@@ -5,6 +5,9 @@ DEBUG = False
 # En production, tailwind est déjà compilé en CSS statique — pas besoin du package
 INSTALLED_APPS = [app for app in INSTALLED_APPS if app not in ('tailwind', 'django_browser_reload')]
 
+# Pas de base SQL — tout est dans Firestore
+DATABASES = {}
+
 # Render génère un sous-domaine .onrender.com + ton domaine custom si configuré
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',

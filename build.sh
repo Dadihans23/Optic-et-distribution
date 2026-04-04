@@ -3,3 +3,4 @@ set -o errexit
 
 pip install -r requirements.txt
 python manage.py collectstatic --no-input
+# Pas de migrate — la base de données est Firestore (pas de SQL)
