@@ -1,0 +1,23 @@
+<div class="bg-white rounded-2xl border border-slate-100 p-5 hover:shadow-md transition-shadow duration-200">
+  <div class="flex items-center justify-between mb-3">
+    <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">{{ label }}</span>
+    <span class="w-2 h-2 rounded-full
+      {% if color == 'yellow' %}bg-amber-400
+      {% elif color == 'blue' %}bg-blue-400
+      {% elif color == 'purple' %}bg-violet-400
+      {% elif color == 'green' %}bg-emerald-400
+      {% else %}bg-slate-400{% endif %}">
+    </span>
+  </div>
+  <p class="text-3xl font-bold text-slate-800">{{ value }}</p>
+  <div class="mt-3 h-1 rounded-full bg-slate-100">
+    <div class="h-1 rounded-full
+      {% if color == 'yellow' %}bg-amber-400
+      {% elif color == 'blue' %}bg-blue-400
+      {% elif color == 'purple' %}bg-violet-400
+      {% elif color == 'green' %}bg-emerald-400
+      {% else %}bg-slate-400{% endif %}"
+      style="width: min({{ value|default:0 }}0%, 100%)">
+    </div>
+  </div>
+</div>

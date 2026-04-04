@@ -1,0 +1,235 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Admin — Optique & Distribution{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary:  { DEFAULT: '#1E88E5', dark: '#1565C0', light: '#42A5F5' },
+            accent:   { DEFAULT: '#EF6C00', light: '#FFA726' },
+            sidebar:  { DEFAULT: '#0F172A', hover: '#1E293B', active: '#1E3A5F' },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .sidebar-link { transition: all 0.15s ease; }
+    .sidebar-link:hover { background: #1E293B; }
+    .sidebar-link.active { background: rgba(239,108,0,0.15); border-left: 3px solid #EF6C00; }
+    .sidebar-link.active svg { color: #EF6C00; }
+    .sidebar-link.active span { color: #fff; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-slate-100 min-h-screen">
+
+<div class="flex min-h-screen">
+
+  <!-- ── SIDEBAR ── -->
+  <aside id="sidebar"
+         class="w-64 bg-sidebar min-h-screen flex flex-col fixed left-0 top-0 z-40 shadow-2xl transition-transform duration-300
+                -translate-x-full lg:translate-x-0">
+
+    <!-- Brand -->
+    <div class="px-6 py-6 border-b border-white/5">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shadow-lg shadow-accent/30">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-white font-bold text-sm leading-tight">
+            <span class="text-accent">O</span>ptique
+            <span class="text-white/50 mx-0.5">&amp;</span>
+            <span class="text-accent">D</span>istribution
+          </p>
+          <p class="text-amber-500/70 text-[10px] font-semibold uppercase tracking-wider">Panneau Admin</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
+      <p class="text-slate-600 text-[10px] font-semibold uppercase tracking-wider px-3 mb-3">Administration</p>
+
+      {% url 'admin_panel:dashboard' as url_admin_dash %}
+      {% url 'admin_panel:orders' as url_admin_orders %}
+      {% url 'admin_panel:deliveries' as url_admin_deliveries %}
+      {% url 'admin_panel:shops' as url_admin_shops %}
+      {% url 'admin_panel:credentials' as url_admin_creds %}
+      {% url 'admin_panel:company' as url_admin_company %}
+
+      <a href="{{ url_admin_dash }}"
+         class="sidebar-link {% if request.path == url_admin_dash %}active{% endif %}
+                flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm">
+        <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+        </svg>
+        <span class="text-slate-400 font-medium">Vue d'ensemble</span>
+      </a>
+
+      <a href="{{ url_admin_orders }}"
+         class="sidebar-link {% if url_admin_orders in request.path %}active{% endif %}
+                flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm">
+        <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+        <span class="text-slate-400 font-medium">Toutes les commandes</span>
+      </a>
+
+      <a href="{{ url_admin_deliveries }}"
+         class="sidebar-link {% if url_admin_deliveries in request.path %}active{% endif %}
+                flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm">
+        <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
+        </svg>
+        <span class="text-slate-400 font-medium">Bons de livraison</span>
+      </a>
+
+      <a href="{{ url_admin_shops }}"
+         class="sidebar-link {% if url_admin_shops in request.path %}active{% endif %}
+                flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm">
+        <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+        </svg>
+        <span class="text-slate-400 font-medium">Boutiques</span>
+      </a>
+
+      <div class="pt-3 mt-3 border-t border-white/5">
+        <p class="text-slate-600 text-[10px] font-semibold uppercase tracking-wider px-3 mb-2">Paramètres</p>
+
+        <a href="{{ url_admin_creds }}"
+           class="sidebar-link {% if url_admin_creds in request.path %}active{% endif %}
+                  flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm">
+          <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+          </svg>
+          <span class="text-slate-400 font-medium">Identifiants boutiques</span>
+        </a>
+
+        <a href="{{ url_admin_company }}"
+           class="sidebar-link {% if url_admin_company in request.path %}active{% endif %}
+                  flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm">
+          <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <span class="text-slate-400 font-medium">Infos entreprise</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Admin / Logout -->
+    <div class="px-4 py-4 border-t border-white/5">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-8 h-8 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center text-accent font-bold text-sm shrink-0">
+          A
+        </div>
+        <div class="overflow-hidden">
+          <p class="text-white text-xs font-semibold truncate">{{ session_shop|default:"Admin" }}</p>
+          <p class="text-amber-500/60 text-[10px]">Administrateur</p>
+        </div>
+      </div>
+      <a href="{% url 'authentication:logout' %}"
+         onclick="return confirm('Voulez-vous vous déconnecter ?')"
+         class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-slate-500 hover:bg-sidebar-hover hover:text-red-400 transition-colors text-xs">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+        </svg>
+        Déconnexion
+      </a>
+    </div>
+  </aside>
+
+  <!-- Overlay mobile -->
+  <div id="sidebarOverlay"
+       class="fixed inset-0 bg-black/50 z-30 hidden lg:hidden"
+       onclick="closeSidebar()"></div>
+
+  <!-- ── MAIN ── -->
+  <div class="flex-1 flex flex-col lg:ml-64">
+
+    <!-- Top bar -->
+    <header class="bg-white border-b border-slate-200 h-14 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-20">
+      <div class="flex items-center gap-3">
+        <button onclick="openSidebar()" class="lg:hidden text-slate-500 hover:text-slate-800">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        <div>
+          <h2 class="text-slate-800 font-semibold text-sm">{% block page_title %}Administration{% endblock %}</h2>
+          <p class="text-slate-400 text-xs hidden sm:block">{% block page_subtitle %}Panneau d'administration{% endblock %}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-full">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+          <span class="text-amber-700 text-xs font-medium">Admin</span>
+        </span>
+        <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white font-bold text-sm">
+          A
+        </div>
+      </div>
+    </header>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="px-5 sm:px-6 pt-4">
+      {% for message in messages %}
+      <div class="flex items-center gap-2 px-4 py-3 mb-2 rounded-xl text-sm
+                  {% if message.tags == 'success' %}bg-green-50 border border-green-200 text-green-700
+                  {% elif message.tags == 'error' %}bg-red-50 border border-red-200 text-red-700
+                  {% else %}bg-blue-50 border border-blue-200 text-blue-700{% endif %}">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Content -->
+    <main class="flex-1 p-5 sm:p-6 overflow-auto">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+</div>
+
+<script>
+  function openSidebar() {
+    document.getElementById('sidebar').classList.remove('-translate-x-full');
+    document.getElementById('sidebarOverlay').classList.remove('hidden');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.add('-translate-x-full');
+    document.getElementById('sidebarOverlay').classList.add('hidden');
+  }
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

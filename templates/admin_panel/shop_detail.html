@@ -1,0 +1,204 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}{{ shop.shopName|default:"Boutique" }} — Admin{% endblock %}
+{% block page_title %}{{ shop.shopName|default:"Boutique" }}{% endblock %}
+{% block page_subtitle %}Fiche boutique — {{ shop.phoneNumber|default:"" }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- Back -->
+  <a href="{% url 'admin_panel:shops' %}"
+     class="inline-flex items-center gap-1.5 text-slate-500 hover:text-primary text-sm font-medium transition-colors">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+    </svg>
+    Retour aux boutiques
+  </a>
+
+  <!-- Header -->
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+    <div class="flex items-start gap-5">
+      <div class="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-2xl shrink-0">
+        {{ shop.shopName|slice:":1"|upper|default:"?" }}
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h2 class="text-slate-800 font-bold text-xl">{{ shop.shopName|default:"Boutique sans nom" }}</h2>
+            {% if shop.firstName %}
+            <p class="text-slate-500 text-sm mt-0.5">{{ shop.firstName }}</p>
+            {% endif %}
+          </div>
+          {% if shop.archived %}
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">
+            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+            Compte désactivé
+          </span>
+          {% else %}
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+            <span class="w-2 h-2 rounded-full bg-green-500"></span>
+            Compte actif
+          </span>
+          {% endif %}
+        </div>
+        <div class="mt-4 flex flex-wrap gap-6">
+          <div>
+            <p class="text-xs text-slate-400 mb-0.5">Téléphone</p>
+            <p class="text-sm font-semibold text-slate-700">{{ shop.phoneNumber|default:"—" }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 mb-0.5">UID Firebase</p>
+            <p class="text-xs font-mono text-slate-500">{{ shop.id }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats rapides -->
+    <div class="mt-5 pt-5 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-3 gap-4">
+      <div class="text-center">
+        <p class="text-2xl font-bold text-slate-800">{{ orders|length }}</p>
+        <p class="text-xs text-slate-400 mt-0.5">Commandes</p>
+      </div>
+      <div class="text-center">
+        <p class="text-2xl font-bold text-green-600">
+          {% with cnt=0 %}{% for o in orders %}{% if o.status == 'delivered' %}{% with cnt=cnt|add:1 %}{% endwith %}{% endif %}{% endfor %}{{ cnt }}{% endwith %}
+        </p>
+        <p class="text-xs text-slate-400 mt-0.5">Livrées</p>
+      </div>
+      <div class="text-center">
+        <p class="text-2xl font-bold text-slate-800">{{ deliveries|length }}</p>
+        <p class="text-xs text-slate-400 mt-0.5">Bons de livraison</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Commandes -->
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-100">
+      <h3 class="text-slate-800 font-semibold text-sm">
+        Commandes
+        <span class="ml-2 px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full text-xs">{{ orders|length }}</span>
+      </h3>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-100">
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">N° commande</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Porteur</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Type de verre</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Traitement</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Statut</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
+            <th class="px-5 py-3"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          {% for order in orders %}
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="px-5 py-3.5 text-slate-400 font-mono text-xs">{{ order.orderNumber|default:order.id|slice:":8" }}</td>
+            <td class="px-5 py-3.5 text-slate-700 font-medium">{{ order.wearerName|default:"—" }}</td>
+            <td class="px-5 py-3.5 text-slate-500 text-xs">{{ order.typeVerre|default:"—" }}</td>
+            <td class="px-5 py-3.5 text-slate-500 text-xs">{{ order.treatmentOption|default:"—" }}</td>
+            <td class="px-5 py-3.5">
+              {% with s=order.status %}
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                {% if s == 'pending' %}bg-amber-100 text-amber-700
+                {% elif s == 'confirmed' %}bg-blue-100 text-blue-700
+                {% elif s == 'shipped' %}bg-purple-100 text-purple-700
+                {% elif s == 'delivered' %}bg-green-100 text-green-700
+                {% else %}bg-slate-100 text-slate-600{% endif %}">
+                {% if s == 'pending' %}En attente
+                {% elif s == 'confirmed' %}Confirmée
+                {% elif s == 'shipped' %}Expédiée
+                {% elif s == 'delivered' %}Livrée
+                {% else %}{{ s }}{% endif %}
+              </span>
+              {% endwith %}
+            </td>
+            <td class="px-5 py-3.5 text-slate-400 text-xs">
+              {% if order.createdAt %}{{ order.createdAt|date:"d/m/Y" }}{% else %}—{% endif %}
+            </td>
+            <td class="px-5 py-3.5">
+              <a href="{% url 'admin_panel:order_detail' order.id %}"
+                 class="text-primary text-xs font-medium hover:underline">Voir →</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="px-5 py-10 text-center text-slate-400 text-sm">
+              Aucune commande pour cette boutique.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Bons de livraison -->
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-100">
+      <h3 class="text-slate-800 font-semibold text-sm">
+        Bons de livraison
+        <span class="ml-2 px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full text-xs">{{ deliveries|length }}</span>
+      </h3>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-100">
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Réf.</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Porteur</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Type de verre</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Traitement</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Statut</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
+            <th class="px-5 py-3"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          {% for delivery in deliveries %}
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="px-5 py-3.5 text-slate-400 font-mono text-xs">{{ delivery.id|slice:":8" }}…</td>
+            <td class="px-5 py-3.5 text-slate-700 font-medium">{{ delivery.wearerName|default:"—" }}</td>
+            <td class="px-5 py-3.5 text-slate-500 text-xs">{{ delivery.typeVerre|default:"—" }}</td>
+            <td class="px-5 py-3.5 text-slate-500 text-xs">{{ delivery.treatmentOption|default:"—" }}</td>
+            <td class="px-5 py-3.5">
+              {% with s=delivery.status %}
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                {% if s == 'en_attente' or s == 'pending' %}bg-amber-100 text-amber-700
+                {% elif s == 'completed' %}bg-green-100 text-green-700
+                {% else %}bg-slate-100 text-slate-600{% endif %}">
+                {% if s == 'en_attente' or s == 'pending' %}En attente
+                {% elif s == 'completed' %}Complété
+                {% else %}{{ s }}{% endif %}
+              </span>
+              {% endwith %}
+            </td>
+            <td class="px-5 py-3.5 text-slate-400 text-xs">
+              {% if delivery.createdAt %}{{ delivery.createdAt|date:"d/m/Y" }}{% else %}—{% endif %}
+            </td>
+            <td class="px-5 py-3.5 flex items-center gap-3">
+              <a href="{% url 'admin_panel:delivery_detail' delivery.id %}"
+                 class="text-primary text-xs font-medium hover:underline">Voir</a>
+              <a href="{% url 'admin_panel:delivery_pdf' delivery.id %}" target="_blank"
+                 class="text-slate-400 hover:text-primary text-xs font-medium transition-colors">PDF</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="px-5 py-10 text-center text-slate-400 text-sm">
+              Aucun bon de livraison pour cette boutique.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

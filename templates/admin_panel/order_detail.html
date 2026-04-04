@@ -1,0 +1,277 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Commande {{ order.orderNumber|default:order.id|slice:":8" }} — Admin{% endblock %}
+{% block page_title %}Détail commande{% endblock %}
+{% block page_subtitle %}{{ order.wearerName|default:"—" }} — {{ order.shopName|default:"—" }}{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleEdit() {
+  document.getElementById('view-mode').classList.toggle('hidden');
+  document.getElementById('edit-mode').classList.toggle('hidden');
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-5">
+
+  <!-- Back + Actions -->
+  <div class="flex items-center justify-between gap-3 flex-wrap">
+    <a href="{% url 'admin_panel:orders' %}"
+       class="inline-flex items-center gap-1.5 text-slate-500 hover:text-primary text-sm font-medium transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+      Retour aux commandes
+    </a>
+    <div class="flex items-center gap-2">
+      <button onclick="toggleEdit()"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-xl transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+        </svg>
+        Modifier
+      </button>
+      <form method="post" action="{% url 'admin_panel:archive_order' order.id %}"
+            onsubmit="return confirm('Archiver cette commande ?')">
+        {% csrf_token %}
+        <button type="submit"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 text-sm font-medium rounded-xl transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12"/>
+          </svg>
+          Archiver
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Header card -->
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+      <div>
+        <p class="text-slate-400 text-xs font-mono mb-1">{{ order.orderNumber|default:order.id }}</p>
+        <h2 class="text-slate-800 font-bold text-lg">{{ order.wearerName|default:"Porteur inconnu" }}</h2>
+        <p class="text-slate-500 text-sm mt-0.5">{{ order.shopName|default:"Boutique inconnue" }}</p>
+        {% if order.phoneNumber %}<p class="text-slate-400 text-xs mt-0.5">{{ order.phoneNumber }}</p>{% endif %}
+      </div>
+      <!-- Status update -->
+      <form method="post" action="{% url 'admin_panel:update_status' order.id %}" class="flex items-center gap-2">
+        {% csrf_token %}
+        <select name="status"
+                class="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 bg-slate-50
+                       focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+          {% for value, label in status_choices %}
+          <option value="{{ value }}" {% if order.status == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="px-4 py-2 bg-primary hover:bg-primary-dark text-white text-sm font-semibold rounded-xl transition-colors">
+          Mettre à jour
+        </button>
+      </form>
+    </div>
+    <div class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap gap-6">
+      <div>
+        <p class="text-xs text-slate-400 mb-0.5">Statut</p>
+        {% with s=order.status %}
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
+          {% if s == 'pending' %}bg-amber-100 text-amber-700
+          {% elif s == 'confirmed' %}bg-blue-100 text-blue-700
+          {% elif s == 'shipped' %}bg-purple-100 text-purple-700
+          {% elif s == 'delivered' %}bg-green-100 text-green-700
+          {% else %}bg-slate-100 text-slate-600{% endif %}">
+          {% if s == 'pending' %}En attente{% elif s == 'confirmed' %}Confirmée{% elif s == 'shipped' %}Expédiée{% elif s == 'delivered' %}Livrée{% else %}{{ s }}{% endif %}
+        </span>
+        {% endwith %}
+      </div>
+      <div>
+        <p class="text-xs text-slate-400 mb-0.5">Date</p>
+        <p class="text-sm font-medium text-slate-700">{% if order.createdAt %}{{ order.createdAt|date:"d/m/Y à H:i" }}{% else %}—{% endif %}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW MODE -->
+  <div id="view-mode">
+    <!-- Verre & Traitement -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-5">
+      <h3 class="text-slate-700 font-semibold text-sm mb-4">Verre & Traitement</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="bg-slate-50 rounded-xl p-4">
+          <p class="text-xs text-slate-400 mb-1">Type de verre</p>
+          <p class="text-slate-800 font-semibold">{{ order.typeVerre|default:"—" }}</p>
+        </div>
+        <div class="bg-slate-50 rounded-xl p-4">
+          <p class="text-xs text-slate-400 mb-1">Traitement</p>
+          <p class="text-slate-800 font-semibold">{{ order.treatmentOption|default:"—" }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Prescription -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-5">
+      <h3 class="text-slate-700 font-semibold text-sm mb-4">Prescription</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-slate-50">
+              <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500"></th>
+              <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500">Sphère</th>
+              <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500">Cylindre</th>
+              <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500">Axe</th>
+              <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500">Addition</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr>
+              <td class="px-4 py-3 bg-blue-50 border-r border-slate-100">
+                <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600">
+                  <span class="w-2 h-2 rounded-full bg-blue-500"></span> OD (Droit)
+                </span>
+              </td>
+              <td class="px-4 py-3 text-center text-slate-800 font-semibold">{{ order.rightSph|default:"—" }}</td>
+              <td class="px-4 py-3 text-center text-slate-800 font-semibold">{{ order.rightCyl|default:"—" }}</td>
+              <td class="px-4 py-3 text-center text-slate-800 font-semibold">{{ order.rightAxe|default:"—" }}</td>
+              <td class="px-4 py-3 text-center text-slate-800 font-semibold">{{ order.rightAdd|default:"—" }}</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-3 bg-green-50 border-r border-slate-100">
+                <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600">
+                  <span class="w-2 h-2 rounded-full bg-green-500"></span> OG (Gauche)
+                </span>
+              </td>
+              <td class="px-4 py-3 text-center text-slate-800 font-semibold">{{ order.leftSph|default:"—" }}</td>
+              <td class="px-4 py-3 text-center text-slate-800 font-semibold">{{ order.leftCyl|default:"—" }}</td>
+              <td class="px-4 py-3 text-center text-slate-800 font-semibold">{{ order.leftAxe|default:"—" }}</td>
+              <td class="px-4 py-3 text-center text-slate-800 font-semibold">{{ order.leftAdd|default:"—" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% if order.notes %}
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+      <h3 class="text-slate-700 font-semibold text-sm mb-3">Notes</h3>
+      <p class="text-slate-600 text-sm bg-slate-50 rounded-xl p-4 whitespace-pre-wrap">{{ order.notes }}</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- EDIT MODE (hidden by default) -->
+  <div id="edit-mode" class="hidden">
+    <form method="post" action="{% url 'admin_panel:update_order_fields' order.id %}">
+      {% csrf_token %}
+      <div class="bg-white rounded-2xl shadow-sm border border-primary/30 p-6 space-y-5">
+        <div class="flex items-center gap-2 mb-1">
+          <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+          </svg>
+          <h3 class="text-primary font-semibold text-sm">Mode édition</h3>
+        </div>
+
+        <!-- Porteur -->
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Nom du porteur</label>
+          <input type="text" name="wearerName" value="{{ order.wearerName|default:'' }}"
+                 class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-slate-50"/>
+        </div>
+
+        <!-- Verre & Traitement -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Type de verre</label>
+            <input type="text" name="typeVerre" value="{{ order.typeVerre|default:'' }}"
+                   class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-slate-50"/>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Traitement</label>
+            <input type="text" name="treatmentOption" value="{{ order.treatmentOption|default:'' }}"
+                   class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-slate-50"/>
+          </div>
+        </div>
+
+        <!-- Prescription OD -->
+        <div>
+          <p class="text-xs font-semibold text-blue-600 mb-2 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span> OD — Œil Droit
+          </p>
+          <div class="grid grid-cols-4 gap-3">
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Sphère</label>
+              <input type="text" name="rightSph" value="{{ order.rightSph|default:'' }}"
+                     class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 bg-slate-50"/>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Cylindre</label>
+              <input type="text" name="rightCyl" value="{{ order.rightCyl|default:'' }}"
+                     class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 bg-slate-50"/>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Axe</label>
+              <input type="text" name="rightAxe" value="{{ order.rightAxe|default:'' }}"
+                     class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 bg-slate-50"/>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Addition</label>
+              <input type="text" name="rightAdd" value="{{ order.rightAdd|default:'' }}"
+                     class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 bg-slate-50"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prescription OG -->
+        <div>
+          <p class="text-xs font-semibold text-green-600 mb-2 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-green-500"></span> OG — Œil Gauche
+          </p>
+          <div class="grid grid-cols-4 gap-3">
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Sphère</label>
+              <input type="text" name="leftSph" value="{{ order.leftSph|default:'' }}"
+                     class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm text-center focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 bg-slate-50"/>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Cylindre</label>
+              <input type="text" name="leftCyl" value="{{ order.leftCyl|default:'' }}"
+                     class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm text-center focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 bg-slate-50"/>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Axe</label>
+              <input type="text" name="leftAxe" value="{{ order.leftAxe|default:'' }}"
+                     class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm text-center focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 bg-slate-50"/>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Addition</label>
+              <input type="text" name="leftAdd" value="{{ order.leftAdd|default:'' }}"
+                     class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm text-center focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 bg-slate-50"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Notes</label>
+          <textarea name="notes" rows="3"
+                    class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-slate-50 resize-none">{{ order.notes|default:'' }}</textarea>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex items-center gap-3 pt-2">
+          <button type="submit"
+                  class="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white text-sm font-semibold rounded-xl transition-colors">
+            Enregistrer les modifications
+          </button>
+          <button type="button" onclick="toggleEdit()"
+                  class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-xl transition-colors">
+            Annuler
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>
+{% endblock %}

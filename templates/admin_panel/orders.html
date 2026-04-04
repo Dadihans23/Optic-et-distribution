@@ -1,0 +1,126 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Commandes — Admin{% endblock %}
+{% block page_title %}Toutes les commandes{% endblock %}
+{% block page_subtitle %}Gestion des commandes de toutes les boutiques{% endblock %}
+
+{% block content %}
+
+<!-- Filters + Export -->
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-5 space-y-3">
+  <!-- Statut -->
+  <div class="flex flex-wrap gap-2 items-center">
+    <span class="text-slate-500 text-sm font-medium mr-1">Statut :</span>
+    <a href="?{% if search %}q={{ search }}&{% endif %}{% if date_from %}date_from={{ date_from }}&{% endif %}{% if date_to %}date_to={{ date_to }}{% endif %}"
+       class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors
+              {% if not status_filter %}bg-primary text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">
+      Tout
+    </a>
+    {% for value, label in status_choices %}
+    <a href="?status={{ value }}{% if search %}&q={{ search }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}"
+       class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors
+              {% if status_filter == value %}bg-primary text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">
+      {{ label }}
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- Recherche + Dates -->
+  <form method="get" class="flex flex-wrap gap-3 items-end">
+    {% if status_filter %}<input type="hidden" name="status" value="{{ status_filter }}">{% endif %}
+    <div class="flex-1 min-w-48">
+      <label class="block text-xs text-slate-500 mb-1">Recherche</label>
+      <input type="text" name="q" value="{{ search|default:'' }}"
+             placeholder="Boutique, porteur, N° commande…"
+             class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-slate-50"/>
+    </div>
+    <div>
+      <label class="block text-xs text-slate-500 mb-1">Du</label>
+      <input type="date" name="date_from" value="{{ date_from|default:'' }}"
+             class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-slate-50"/>
+    </div>
+    <div>
+      <label class="block text-xs text-slate-500 mb-1">Au</label>
+      <input type="date" name="date_to" value="{{ date_to|default:'' }}"
+             class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-slate-50"/>
+    </div>
+    <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary-dark transition-colors">
+      Filtrer
+    </button>
+    {% if search or date_from or date_to %}
+    <a href="{% url 'admin_panel:orders' %}{% if status_filter %}?status={{ status_filter }}{% endif %}"
+       class="px-4 py-2 bg-slate-100 text-slate-600 text-sm font-medium rounded-xl hover:bg-slate-200 transition-colors">
+      Effacer
+    </a>
+    {% endif %}
+  </form>
+
+  <!-- Compteur + Export PDF -->
+  <div class="flex items-center justify-between pt-1">
+    <span class="text-slate-400 text-xs">{{ orders|length }} résultat{% if orders|length != 1 %}s{% endif %}</span>
+    <a href="{% url 'admin_panel:orders_export_pdf' %}?{% if search %}q={{ search }}&{% endif %}{% if date_from %}date_from={{ date_from }}&{% endif %}{% if date_to %}date_to={{ date_to }}{% endif %}"
+       target="_blank"
+       class="inline-flex items-center gap-2 px-4 py-1.5 bg-accent hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition-colors">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+      </svg>
+      Exporter Fiche Finale PDF
+    </a>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="bg-slate-50 border-b border-slate-100">
+          <th class="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">N° commande</th>
+          <th class="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Boutique</th>
+          <th class="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Porteur</th>
+          <th class="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Type de verre</th>
+          <th class="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Statut</th>
+          <th class="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
+          <th class="px-6 py-3"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        {% for order in orders %}
+        <tr class="hover:bg-slate-50 transition-colors">
+          <td class="px-6 py-3.5 text-slate-500 font-mono text-xs">{{ order.orderNumber|default:order.id|slice:":8" }}</td>
+          <td class="px-6 py-3.5">
+            <p class="text-slate-700 font-medium">{{ order.shopName|default:"—" }}</p>
+            <p class="text-slate-400 text-xs">{{ order.phoneNumber|default:"" }}</p>
+          </td>
+          <td class="px-6 py-3.5 text-slate-700 font-medium">{{ order.wearerName|default:"—" }}</td>
+          <td class="px-6 py-3.5 text-slate-500 text-xs">{{ order.typeVerre|default:"—" }}</td>
+          <td class="px-6 py-3.5">
+            {% with s=order.status %}
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+              {% if s == 'pending' %}bg-amber-100 text-amber-700
+              {% elif s == 'confirmed' %}bg-blue-100 text-blue-700
+              {% elif s == 'shipped' %}bg-purple-100 text-purple-700
+              {% elif s == 'delivered' %}bg-green-100 text-green-700
+              {% else %}bg-slate-100 text-slate-600{% endif %}">
+              {% if s == 'pending' %}En attente{% elif s == 'confirmed' %}Confirmée{% elif s == 'shipped' %}Expédiée{% elif s == 'delivered' %}Livrée{% else %}{{ s }}{% endif %}
+            </span>
+            {% endwith %}
+          </td>
+          <td class="px-6 py-3.5 text-slate-400 text-xs">
+            {% if order.createdAt %}{{ order.createdAt|date:"d/m/Y" }}{% else %}—{% endif %}
+          </td>
+          <td class="px-6 py-3.5">
+            <a href="{% url 'admin_panel:order_detail' order.id %}" class="text-primary text-xs font-medium hover:underline">Détail →</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="px-6 py-16 text-center text-slate-400 text-sm">Aucune commande trouvée.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

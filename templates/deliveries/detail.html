@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load optic_filters %}
+
+{% block title %}Bon de livraison — Optic Vision{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+  <div class="flex items-center gap-3 mb-6">
+    <a href="{% url 'deliveries:list' %}" class="text-gray-400 hover:text-gray-600">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+    </a>
+    <div>
+      <h1 class="text-xl font-bold text-gray-800">Bon de livraison</h1>
+      <p class="text-gray-500 text-xs mt-0.5">{{ delivery.createdAt|date_fr }}</p>
+    </div>
+    <div class="ml-auto flex items-center gap-3">
+      {% status_badge delivery.status delivery=True %}
+      {% if delivery.status == 'approved' %}
+      <a href="{% url 'deliveries:pdf' delivery.id %}"
+         class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        Télécharger PDF
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <h2 class="font-semibold text-gray-700 mb-4 pb-2 border-b">Informations</h2>
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+        <div><dt class="text-gray-500">Porteur</dt><dd class="font-medium text-gray-800 mt-0.5">{{ delivery.wearerName|default:'-' }}</dd></div>
+        <div><dt class="text-gray-500">Boutique</dt><dd class="font-medium text-gray-800 mt-0.5">{{ delivery.shopName|default:'-' }}</dd></div>
+        <div><dt class="text-gray-500">Type de verre</dt><dd class="font-medium text-gray-800 mt-0.5">{{ delivery.typeVerre|default:'-' }}</dd></div>
+        <div><dt class="text-gray-500">Traitement</dt><dd class="font-medium text-gray-800 mt-0.5">{{ delivery.treatmentOption|default:'-' }}</dd></div>
+      </dl>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <h2 class="font-semibold text-gray-700 mb-4 pb-2 border-b">Prescription</h2>
+      <div class="grid grid-cols-2 gap-6 text-sm">
+        <div>
+          <h3 class="text-xs font-semibold text-primary text-center bg-blue-50 py-1.5 rounded-lg mb-3">OD</h3>
+          <dl class="space-y-2">
+            <div class="flex justify-between"><dt class="text-gray-500">Sph</dt><dd>{{ delivery.rightSph|default:'-' }}</dd></div>
+            <div class="flex justify-between"><dt class="text-gray-500">Cyl</dt><dd>{{ delivery.rightCyl|default:'-' }}</dd></div>
+            <div class="flex justify-between"><dt class="text-gray-500">Axe</dt><dd>{{ delivery.rightAxe|default:'-' }}</dd></div>
+            <div class="flex justify-between"><dt class="text-gray-500">Add</dt><dd>{{ delivery.rightAdd|default:'-' }}</dd></div>
+          </dl>
+        </div>
+        <div>
+          <h3 class="text-xs font-semibold text-primary text-center bg-blue-50 py-1.5 rounded-lg mb-3">OG</h3>
+          <dl class="space-y-2">
+            <div class="flex justify-between"><dt class="text-gray-500">Sph</dt><dd>{{ delivery.leftSph|default:'-' }}</dd></div>
+            <div class="flex justify-between"><dt class="text-gray-500">Cyl</dt><dd>{{ delivery.leftCyl|default:'-' }}</dd></div>
+            <div class="flex justify-between"><dt class="text-gray-500">Axe</dt><dd>{{ delivery.leftAxe|default:'-' }}</dd></div>
+            <div class="flex justify-between"><dt class="text-gray-500">Add</dt><dd>{{ delivery.leftAdd|default:'-' }}</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

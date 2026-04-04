@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load optic_filters %}
+
+{% block title %}Mes commandes — Optic Vision{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Mes commandes</h1>
+      <p class="text-gray-500 text-sm mt-1">{{ orders|length }} commande{{ orders|length|pluralize }}</p>
+    </div>
+    <a href="{% url 'orders:create' %}"
+       class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+      + Nouvelle commande
+    </a>
+  </div>
+
+  <!-- Filtres statut -->
+  <div class="flex gap-2 mb-5 flex-wrap">
+    {% for status, label in '' %}{% endfor %}
+    <a href="{% url 'orders:list' %}"
+       class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors
+              {% if not status_filter %}bg-primary text-white{% else %}bg-white text-gray-600 border border-gray-200 hover:bg-gray-50{% endif %}">
+      Toutes
+    </a>
+    {% for s, lbl in status_choices %}
+    <a href="?status={{ s }}"
+       class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors
+              {% if status_filter == s %}bg-primary text-white{% else %}bg-white text-gray-600 border border-gray-200 hover:bg-gray-50{% endif %}">
+      {{ lbl }}
+    </a>
+    {% endfor %}
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+    {% if orders %}
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-gray-500 uppercase text-xs border-b border-gray-100">
+          <tr>
+            <th class="px-6 py-3 text-left">N° commande</th>
+            <th class="px-6 py-3 text-left">Porteur</th>
+            <th class="px-6 py-3 text-left">Type de verre</th>
+            <th class="px-6 py-3 text-left">Date</th>
+            <th class="px-6 py-3 text-left">Statut</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+          {% for order in orders %}
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-3">
+              <a href="{% url 'orders:detail' order.id %}" class="font-mono text-xs text-primary hover:underline">
+                {{ order.orderNumber|default:order.id|slice:":12" }}
+              </a>
+            </td>
+            <td class="px-6 py-3 font-medium text-gray-800">{{ order.wearerName|default:'-' }}</td>
+            <td class="px-6 py-3 text-gray-500 text-xs">{{ order.typeVerre|default:'-' }}</td>
+            <td class="px-6 py-3 text-gray-500">{{ order.createdAt|date_fr }}</td>
+            <td class="px-6 py-3">{% status_badge order.status %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center py-16 text-gray-400">
+      <p class="text-sm">Aucune commande{% if status_filter %} avec ce statut{% endif %}.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
