@@ -26,5 +26,5 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 # Proxy Render (nécessaire pour que HTTPS soit bien détecté)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Fichiers statiques — WhiteNoise sert les fichiers directement
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Fichiers statiques — WhiteNoise sert les fichiers directement avec compression
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
