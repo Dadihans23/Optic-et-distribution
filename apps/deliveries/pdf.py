@@ -36,7 +36,7 @@ CONTENT_W = PAGE_W - LM - RM
 # Espace réservé en bas pour Service Client + divider + footer
 # Mobile : SizedBox(100) sous Service Client + SizedBox(14) + divider + SizedBox(5) + footer
 # Positions depuis le BAS de la page (coordonnées canvas ReportLab) :
-Y_SERVICE_CLIENT = 154   # pt from bottom  (100 + ~14 + ~footer_h + BM)
+Y_SERVICE_CLIENT = 194   # pt from bottom  (100 + ~14 + ~footer_h + BM)
 Y_DIVIDER        = 42    # pt from bottom
 Y_FOOTER_START   = 33    # pt from bottom  (1re ligne = adresse)
 FOOTER_LINE_H    = 11    # hauteur de ligne pour police 8pt
@@ -48,7 +48,7 @@ LOGO_PATHS = [
     Path(r'c:\Users\HP I7\Desktop\Optic Vison\optic_vision\assets\images\logo.png'),
 ]
 CACHET_PATHS = [
-    BASE_DIR / 'static' / 'images' / 'cachet.png',
+    BASE_DIR / 'static' / 'images' / 'optic_et_distribution_cachet.png',
 ]
 
 
@@ -95,7 +95,7 @@ def _make_on_page(company: dict):
 
         # ── Cachet (sous "Service Client", aligné à droite) ──────────────────
         if cachet:
-            cachet_size = 100
+            cachet_size = 170
             canvas.drawImage(
                 cachet,
                 PAGE_W - RM - cachet_size,
