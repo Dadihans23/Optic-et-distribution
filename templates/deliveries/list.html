@@ -22,6 +22,7 @@
       <table class="w-full text-sm">
         <thead class="bg-gray-50 text-gray-500 uppercase text-xs border-b border-gray-100">
           <tr>
+            <th class="px-6 py-3 text-left">N° Bon</th>
             <th class="px-6 py-3 text-left">Porteur</th>
             <th class="px-6 py-3 text-left">Type de verre</th>
             <th class="px-6 py-3 text-left">Date</th>
@@ -32,15 +33,24 @@
         <tbody class="divide-y divide-gray-50">
           {% for d in deliveries %}
           <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-3 font-mono text-xs font-bold {% if d.bonNumber %}text-primary{% else %}text-gray-300{% endif %}">{{ d.bonNumber|default:"—" }}</td>
             <td class="px-6 py-3 font-medium text-gray-800">{{ d.wearerName|default:'-' }}</td>
             <td class="px-6 py-3 text-gray-500 text-xs">{{ d.typeVerre|default:'-' }}</td>
             <td class="px-6 py-3 text-gray-500">{{ d.createdAt|date_fr }}</td>
             <td class="px-6 py-3">{% status_badge d.status delivery=True %}</td>
             <td class="px-6 py-3 flex items-center gap-3">
               <a href="{% url 'deliveries:detail' d.id %}" class="text-primary text-xs hover:underline">Voir</a>
-              {% if d.status == 'approved' %}
-              <a href="{% url 'deliveries:pdf' d.id %}"
+              {% if d.status == 'traité' or d.status == 'completed' %}
+              <a href="{% url 'deliveries:pdf' d.id %}?preview=1" target="_blank"
                  class="text-xs text-green-600 hover:underline flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+                Aperçu
+              </a>
+              <a href="{% url 'deliveries:pdf' d.id %}"
+                 class="text-xs text-green-700 hover:underline flex items-center gap-1">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>

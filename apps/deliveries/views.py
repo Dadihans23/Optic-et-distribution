@@ -48,6 +48,9 @@ def delivery_pdf_view(request, delivery_id):
     if not delivery or delivery.get('userId') != uid:
         raise Http404
 
+    if delivery.get('status') not in ('traité', 'completed'):
+        raise Http404
+
     from apps.core.firebase import get_db
     db = get_db()
     company_doc = db.collection('company_info').document('company_info').get()
@@ -55,5 +58,8 @@ def delivery_pdf_view(request, delivery_id):
 
     pdf_bytes = generate_bon_livraison(delivery, company)
     response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="bon_livraison_{delivery_id[:8]}.pdf"'
+    if request.GET.get('preview'):
+        response['Content-Disposition'] = f'inline; filename="bon_livraison_{delivery_id[:8]}.pdf"'
+    else:
+        response['Content-Disposition'] = f'attachment; filename="bon_livraison_{delivery_id[:8]}.pdf"'
     return response

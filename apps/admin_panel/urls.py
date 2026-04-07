@@ -15,6 +15,7 @@ urlpatterns = [
     # Bons de livraison
     path('bons-de-livraison/', views.admin_deliveries_view, name='deliveries'),
     path('bons-de-livraison/export/pdf/', views.admin_deliveries_export_pdf_view, name='deliveries_export_pdf'),
+    path('bons-de-livraison/compteur/', views.admin_bon_counter_view, name='bon_counter'),
     path('bons-de-livraison/<str:delivery_id>/', views.admin_delivery_detail_view, name='delivery_detail'),
     path('bons-de-livraison/<str:delivery_id>/modifier/', views.admin_update_delivery_fields_view, name='update_delivery_fields'),
     path('bons-de-livraison/<str:delivery_id>/statut/', views.admin_update_delivery_status_view, name='update_delivery_status'),

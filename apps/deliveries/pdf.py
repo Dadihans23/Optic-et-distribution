@@ -47,6 +47,9 @@ LOGO_PATHS = [
     BASE_DIR / 'static' / 'images' / 'logo.png',
     Path(r'c:\Users\HP I7\Desktop\Optic Vison\optic_vision\assets\images\logo.png'),
 ]
+CACHET_PATHS = [
+    BASE_DIR / 'static' / 'images' / 'cachet.png',
+]
 
 
 def _logo_path():
@@ -71,8 +74,17 @@ def _company_name_rich(name: str) -> str:
     return ''.join(parts).strip()
 
 
+def _cachet_path():
+    for p in CACHET_PATHS:
+        if p.exists():
+            return str(p)
+    return None
+
+
 def _make_on_page(company: dict):
     """Retourne le callback onPage qui dessine les éléments fixes sur chaque page."""
+    cachet = _cachet_path()
+
     def on_page(canvas, doc):
         canvas.saveState()
 
@@ -80,6 +92,19 @@ def _make_on_page(company: dict):
         canvas.setFont('Helvetica-BoldOblique', 11)
         canvas.setFillColorRGB(0, 0, 0)
         canvas.drawRightString(PAGE_W - RM, Y_SERVICE_CLIENT, 'Service Client')
+
+        # ── Cachet (sous "Service Client", aligné à droite) ──────────────────
+        if cachet:
+            cachet_size = 100
+            canvas.drawImage(
+                cachet,
+                PAGE_W - RM - cachet_size,
+                Y_SERVICE_CLIENT - cachet_size,
+                width=cachet_size,
+                height=cachet_size,
+                preserveAspectRatio=True,
+                mask='auto',
+            )
 
         # ── Divider ──────────────────────────────────────────────────────────
         canvas.setStrokeColorRGB(0.741, 0.741, 0.741)
@@ -196,8 +221,9 @@ def generate_bon_livraison(delivery: dict, company: dict) -> bytes:
 
     # ── TITRE ────────────────────────────────────────────────────────────────
     # Mobile : "BON DE LIVRAISON N° ___________________" — une seule ligne centrée
+    bon_number = delivery.get('bonNumber') or '___________________'
     story.append(Paragraph(
-        '<b>BON DE LIVRAISON N° ___________________</b>',
+        f'<b>BON DE LIVRAISON N° :{bon_number}</b>',
         ParagraphStyle('title', fontSize=13, fontName='Helvetica-Bold',
                        alignment=TA_CENTER),
     ))

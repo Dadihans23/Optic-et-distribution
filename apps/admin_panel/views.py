@@ -27,7 +27,7 @@ STATUS_CHOICES = [
 
 DELIVERY_STATUS_CHOICES = [
     ('en_attente', 'En attente'),
-    ('traite',     'Traité'),
+    ('traité',     'Traité'),
     ('completed',  'Complété'),
 ]
 
@@ -159,6 +159,52 @@ def admin_update_delivery_fields_view(request, delivery_id):
     return redirect('admin_panel:delivery_detail', delivery_id=delivery_id)
 
 
+def _assign_bon_number(db, delivery_id, existing_data):
+    """Génère et stocke un bonNumber si la livraison n'en a pas encore."""
+    if existing_data.get('bonNumber'):
+        return existing_data['bonNumber']
+
+    from datetime import datetime, timezone as tz
+    now = datetime.now(tz=tz.utc)
+    month_key = now.strftime('%Y-%m')   # ex. "2026-04"
+    month_str = now.strftime('%m')       # ex. "04"
+
+    counter_ref = db.collection('counters').document('bon_livraison')
+    counter_doc = counter_ref.get()
+    counter_data = counter_doc.to_dict() if counter_doc.exists else {}
+    new_num = counter_data.get(month_key, 0) + 1
+    bon_number = f'{month_str}-{new_num:04d}'
+
+    counter_ref.set({month_key: new_num}, merge=True)
+    db.collection('delivery_requests').document(delivery_id).update({'bonNumber': bon_number})
+    return bon_number
+
+
+@admin_required
+def admin_bon_counter_view(request):
+    from datetime import datetime, timezone as tz
+    db = get_db()
+    counter_ref = db.collection('counters').document('bon_livraison')
+
+    if request.method == 'POST':
+        month = request.POST.get('month', '').strip()   # ex: 2026-04
+        value = request.POST.get('value', '').strip()
+        if month and value.isdigit():
+            counter_ref.set({month: int(value)}, merge=True)
+            messages.success(request, f'Compteur {month} défini à {value}. Prochain : {month[5:]}-{int(value)+1:04d}')
+        else:
+            messages.error(request, 'Mois invalide ou valeur non numérique.')
+        return redirect('admin_panel:bon_counter')
+
+    counter_doc = counter_ref.get()
+    counter_data = counter_doc.to_dict() if counter_doc.exists else {}
+    current_month = datetime.now(tz=tz.utc).strftime('%Y-%m')
+    return render(request, 'admin_panel/bon_counter.html', {
+        'counter_data': counter_data,
+        'current_month': current_month,
+    })
+
+
 @admin_required
 @require_POST
 def admin_update_delivery_status_view(request, delivery_id):
@@ -167,10 +213,17 @@ def admin_update_delivery_status_view(request, delivery_id):
     if new_status in allowed:
         from datetime import datetime, timezone as tz
         db = get_db()
-        db.collection('delivery_requests').document(delivery_id).update({
+        update_data = {
             'status': new_status,
             'updatedAt': datetime.now(tz=tz.utc),
-        })
+        }
+        db.collection('delivery_requests').document(delivery_id).update(update_data)
+
+        if new_status == 'traité':
+            delivery = get_delivery_by_id(delivery_id)
+            if delivery:
+                _assign_bon_number(db, delivery_id, delivery)
+
         messages.success(request, 'Statut mis à jour.')
     return redirect('admin_panel:delivery_detail', delivery_id=delivery_id)
 
@@ -329,5 +382,8 @@ def admin_delivery_pdf_view(request, delivery_id):
     company = company_doc.to_dict() if company_doc.exists else {}
     pdf_bytes = generate_bon_livraison(delivery, company)
     response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename="bon_livraison_{delivery_id[:8]}.pdf"'
+    if request.GET.get('preview'):
+        response['Content-Disposition'] = f'inline; filename="bon_livraison_{delivery_id[:8]}.pdf"'
+    else:
+        response['Content-Disposition'] = f'attachment; filename="bon_livraison_{delivery_id[:8]}.pdf"'
     return response
