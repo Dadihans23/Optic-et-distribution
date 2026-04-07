@@ -95,7 +95,7 @@ def _make_on_page(company: dict):
 
         # ── Cachet (sous "Service Client", aligné à droite) ──────────────────
         if cachet:
-            cachet_size = 170
+            cachet_size = 175
             canvas.drawImage(
                 cachet,
                 PAGE_W - RM - cachet_size,
