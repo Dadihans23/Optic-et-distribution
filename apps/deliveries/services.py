@@ -29,12 +29,13 @@ def get_delivery_by_id(delivery_id: str) -> dict | None:
     return None
 
 
-def create_delivery_request(uid: str, shop_name: str, data: dict) -> str:
+def create_delivery_request(uid: str, shop_name: str, phone_number: str, data: dict) -> str:
     db = _db()
     doc_data = {
         'userId': uid,
         'shopName': shop_name,
-        'status': 'pending',
+        'phoneNumber': phone_number,
+        'status': 'en_attente',
         'createdAt': datetime.now(tz=timezone.utc),
         **data,
     }

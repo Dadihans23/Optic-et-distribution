@@ -22,7 +22,10 @@ def delivery_create_view(request):
     if request.method == 'POST' and form.is_valid():
         uid = request.session['uid']
         shop_name = request.session.get('shopName', '')
-        delivery_id = create_delivery_request(uid, shop_name, form.cleaned_data)
+        from apps.core.firebase import get_db
+        user_doc = get_db().collection('users').document(uid).get()
+        phone_number = user_doc.to_dict().get('phoneNumber', '') if user_doc.exists else ''
+        delivery_id = create_delivery_request(uid, shop_name, phone_number, form.cleaned_data)
         messages.success(request, 'Demande de bon de livraison envoyée.')
         return redirect('deliveries:detail', delivery_id=delivery_id)
     return render(request, 'deliveries/create.html', {

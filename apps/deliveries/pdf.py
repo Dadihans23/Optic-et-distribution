@@ -246,8 +246,8 @@ def generate_bon_livraison(delivery: dict, company: dict) -> bytes:
     story.append(Spacer(1, 24))
 
     # ── TABLEAU DÉSIGNATION (1 colonne pleine largeur) ────────────────────────
-    type_v = delivery.get('typeVerre') or '-'
-    treat  = delivery.get('treatmentOption') or '-'
+    type_v = delivery.get('typeVerre') or ''
+    treat  = delivery.get('treatmentOption') or ''
 
     row_style = ParagraphStyle('dr', fontSize=10, fontName='Helvetica', leading=13)
     hdr_style = ParagraphStyle('dh', fontSize=11, fontName='Helvetica-Bold',
@@ -289,7 +289,7 @@ def generate_bon_livraison(delivery: dict, company: dict) -> bytes:
 
     def _v(key):
         val = delivery.get(key)
-        return str(val) if val else '-'
+        return str(val) if val else ''
 
     cw = [CONTENT_W * 2/6] + [CONTENT_W / 6] * 4
     presc_t = Table(
