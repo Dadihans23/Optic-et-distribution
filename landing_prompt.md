@@ -87,3 +87,9 @@ Propose :
 - Base-toi sur le projet réel
 - Si une info manque, fais une hypothèse intelligente
 - Le rendu doit être professionnel, crédible et prêt à être utilisé
+
+
+
+
+
+2caa5d9fcf5ce34e2d26cb0595ed6212ef0484f95cc28059a46dbc346c2f2db48beb92ec823f3bc5e96929dfa5f87d324be3
