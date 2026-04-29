@@ -9,29 +9,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.VPS_USER }}@${{ secrets.SSH_HOST }} << 'ENDSSH'
             set -e
             cd /home/hans/Optic-et-distribution
-
-            # Récupérer les dernières modifications
             git pull origin prod
-
-            # Activer le venv
             source venv/bin/activate
-
-            # Installer les nouvelles dépendances si requirements.txt a changé
             pip install -r requirements.txt --quiet
-
-            # Recompiler Tailwind + collecter les fichiers statiques
             DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic --no-input
-
-            # Redémarrer Gunicorn
             sudo systemctl restart optic-vision
-
-            echo "✅ Déploiement terminé"
+            echo "Déploiement termine"
+          ENDSSH
