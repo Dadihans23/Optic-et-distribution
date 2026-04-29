@@ -26,4 +26,3 @@ jobs:
              DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic --no-input && \
              sudo systemctl restart optic-vision && \
              echo 'Deploiement termine'"
-tail -50 /home/hans/Optic-et-distribution/django_errors.log
