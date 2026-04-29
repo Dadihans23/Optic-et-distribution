@@ -3,50 +3,109 @@
 
 {% block title %}Bon de livraison — Optic Vision{% endblock %}
 
+{% block extra_css %}
+<style>
+@media (max-width: 639px) {
+  /* Header : 2 lignes sur mobile */
+  .detail-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .detail-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+  }
+  .detail-header-right {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+    margin-left: 0 !important;
+  }
+  /* Badge + boutons sur une ligne en mobile */
+  .detail-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  /* Boutons PDF pleine largeur sur mobile */
+  .pdf-btn {
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+  }
+  /* Grille infos : 1 colonne sur mobile */
+  .info-grid {
+    grid-template-columns: 1fr !important;
+  }
+  /* Padding réduit sur mobile */
+  .card-mobile {
+    padding: 1rem !important;
+  }
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="max-w-3xl mx-auto">
-  <div class="flex items-center gap-3 mb-6">
-    <a href="{% url 'deliveries:list' %}" class="text-gray-400 hover:text-gray-600">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-      </svg>
-    </a>
-    <div>
-      <h1 class="text-xl font-bold text-gray-800">Bon de livraison</h1>
-      {% if delivery.bonNumber %}
-      <p class="text-primary font-mono font-bold text-sm mt-0.5">N° {{ delivery.bonNumber }}</p>
-      {% endif %}
-      <p class="text-gray-500 text-xs mt-0.5">{{ delivery.createdAt|date_fr }}</p>
-    </div>
-    <div class="ml-auto flex items-center gap-3">
-      {% status_badge delivery.status delivery=True %}
-      {% if delivery.status == 'traité' or delivery.status == 'completed' %}
-      <a href="{% url 'deliveries:pdf' delivery.id %}?preview=1" target="_blank"
-         class="flex items-center gap-2 bg-white border border-green-600 hover:bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+
+  <!-- ── Header ── -->
+  <div class="detail-header flex items-center gap-3 mb-6">
+
+    <!-- Ligne 1 mobile : flèche + titre -->
+    <div class="detail-header-left">
+      <a href="{% url 'deliveries:list' %}" class="text-gray-400 hover:text-gray-600 shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
         </svg>
-        Aperçu
       </a>
-      <a href="{% url 'deliveries:pdf' delivery.id %}"
-         class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-        </svg>
-        Télécharger
-      </a>
-      {% endif %}
+      <div>
+        <h1 class="text-xl font-bold text-gray-800">Bon de livraison</h1>
+        {% if delivery.bonNumber %}
+        <p class="text-primary font-mono font-bold text-sm mt-0.5">N° {{ delivery.bonNumber }}</p>
+        {% endif %}
+        <p class="text-gray-500 text-xs mt-0.5">{{ delivery.createdAt|date_fr }}</p>
+      </div>
     </div>
+
+    <!-- Ligne 2 mobile : badge + boutons PDF -->
+    <div class="detail-header-right ml-auto">
+      <div class="detail-header-actions">
+        {% status_badge delivery.status delivery=True %}
+        {% if delivery.status == 'traité' or delivery.status == 'completed' %}
+        <a href="{% url 'deliveries:pdf' delivery.id %}?preview=1" target="_blank"
+           class="pdf-btn flex items-center gap-2 bg-white border border-green-600 hover:bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+          </svg>
+          Aperçu
+        </a>
+        <a href="{% url 'deliveries:pdf' delivery.id %}"
+           class="pdf-btn flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          Télécharger
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
   </div>
 
+  <!-- ── Contenu ── -->
   <div class="space-y-4">
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+
+    <div class="card-mobile bg-white rounded-xl shadow-sm border border-gray-100 p-6">
       <h2 class="font-semibold text-gray-700 mb-4 pb-2 border-b">Informations</h2>
-      <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+      <dl class="info-grid grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
         <div><dt class="text-gray-500">Porteur</dt><dd class="font-medium text-gray-800 mt-0.5">{{ delivery.wearerName|default:'-' }}</dd></div>
         <div><dt class="text-gray-500">Boutique</dt><dd class="font-medium text-gray-800 mt-0.5">{{ delivery.shopName|default:'-' }}</dd></div>
         <div><dt class="text-gray-500">Type de verre</dt><dd class="font-medium text-gray-800 mt-0.5">{{ delivery.typeVerre|default:'-' }}</dd></div>
@@ -54,7 +113,7 @@
       </dl>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <div class="card-mobile bg-white rounded-xl shadow-sm border border-gray-100 p-6">
       <h2 class="font-semibold text-gray-700 mb-4 pb-2 border-b">Prescription</h2>
       <div class="grid grid-cols-2 gap-6 text-sm">
         <div>
@@ -77,6 +136,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
 {% endblock %}

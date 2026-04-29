@@ -3,9 +3,33 @@
 
 {% block title %}Mes commandes — Optic Vision{% endblock %}
 
+{% block extra_css %}
+<style>
+@media (max-width: 639px) {
+  .orders-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .orders-header a {
+    width: 100%;
+    text-align: center;
+  }
+  .orders-table { display: none; }
+  .orders-cards { display: flex; flex-direction: column; gap: 0.75rem; }
+}
+@media (min-width: 640px) {
+  .orders-table { display: block; }
+  .orders-cards { display: none; }
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="max-w-5xl mx-auto">
-  <div class="flex items-center justify-between mb-6">
+
+  <!-- ── Header ── -->
+  <div class="orders-header flex items-center justify-between mb-6">
     <div>
       <h1 class="text-2xl font-bold text-gray-800">Mes commandes</h1>
       <p class="text-gray-500 text-sm mt-1">{{ orders|length }} commande{{ orders|length|pluralize }}</p>
@@ -16,9 +40,8 @@
     </a>
   </div>
 
-  <!-- Filtres statut -->
+  <!-- ── Filtres statut ── -->
   <div class="flex gap-2 mb-5 flex-wrap">
-    {% for status, label in '' %}{% endfor %}
     <a href="{% url 'orders:list' %}"
        class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors
               {% if not status_filter %}bg-primary text-white{% else %}bg-white text-gray-600 border border-gray-200 hover:bg-gray-50{% endif %}">
@@ -33,8 +56,10 @@
     {% endfor %}
   </div>
 
-  <div class="bg-white rounded-xl shadow-sm border border-gray-100">
-    {% if orders %}
+  {% if orders %}
+
+  <!-- ── Tableau (desktop) ── -->
+  <div class="orders-table bg-white rounded-xl shadow-sm border border-gray-100">
     <div class="overflow-x-auto">
       <table class="w-full text-sm">
         <thead class="bg-gray-50 text-gray-500 uppercase text-xs border-b border-gray-100">
@@ -63,11 +88,37 @@
         </tbody>
       </table>
     </div>
-    {% else %}
-    <div class="text-center py-16 text-gray-400">
-      <p class="text-sm">Aucune commande{% if status_filter %} avec ce statut{% endif %}.</p>
-    </div>
-    {% endif %}
   </div>
+
+  <!-- ── Cards (mobile) ── -->
+  <div class="orders-cards">
+    {% for order in orders %}
+    <a href="{% url 'orders:detail' order.id %}"
+       class="block bg-white rounded-xl border border-gray-100 shadow-sm p-4 hover:bg-gray-50 transition-colors">
+      <div class="flex items-start justify-between gap-3">
+        <div class="min-w-0">
+          <p class="font-mono text-xs text-primary font-semibold truncate">
+            {{ order.orderNumber|default:order.id|slice:":12" }}
+          </p>
+          <p class="font-medium text-gray-800 text-sm mt-1 truncate">{{ order.wearerName|default:'-' }}</p>
+          {% if order.typeVerre %}
+          <p class="text-gray-400 text-xs mt-0.5 truncate">{{ order.typeVerre }}</p>
+          {% endif %}
+        </div>
+        <div class="flex flex-col items-end gap-2 shrink-0">
+          {% status_badge order.status %}
+          <span class="text-gray-400 text-xs">{{ order.createdAt|date_fr }}</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 text-center py-16 text-gray-400">
+    <p class="text-sm">Aucune commande{% if status_filter %} avec ce statut{% endif %}.</p>
+  </div>
+  {% endif %}
+
 </div>
 {% endblock %}
