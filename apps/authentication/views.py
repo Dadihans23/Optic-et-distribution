@@ -6,13 +6,16 @@ from django.conf import settings
 from django.views.decorators.http import require_http_methods
 
 from apps.core.firebase import get_db, verify_token
-from .forms import PhoneLoginForm
+from .forms import PhoneLoginForm, RegisterForm
 
 logger = logging.getLogger(__name__)
 
 
 FIREBASE_SIGN_IN_URL = (
     'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword'
+)
+FIREBASE_SIGN_UP_URL = (
+    'https://identitytoolkit.googleapis.com/v1/accounts:signUp'
 )
 
 
@@ -107,6 +110,69 @@ def login_view(request):
                 error = 'Une erreur est survenue. Veuillez réessayer.'
 
     return render(request, 'authentication/login.html', {'form': form, 'error': error})
+
+
+@require_http_methods(['GET', 'POST'])
+def register_view(request):
+    if request.session.get('uid'):
+        return redirect('dashboard:index')
+
+    form = RegisterForm(request.POST or None)
+    error = None
+
+    if request.method == 'POST' and form.is_valid():
+        phone    = form.cleaned_data['phone_number']
+        name     = form.cleaned_data['first_name']
+        shop     = form.cleaned_data['shop_name']
+        email    = f"{phone}@lunetterie.com"
+        password = f"{phone}lunetterie"
+
+        # Vérifier que le numéro n'est pas déjà utilisé
+        db = get_db()
+        existing = db.collection('users').where('phoneNumber', '==', phone).limit(1).get()
+        if len(existing) > 0:
+            error = 'Ce numéro de téléphone est déjà associé à un compte.'
+        else:
+            try:
+                resp = http_requests.post(
+                    FIREBASE_SIGN_UP_URL,
+                    params={'key': settings.FIREBASE_WEB_API_KEY},
+                    json={'email': email, 'password': password, 'returnSecureToken': True},
+                    timeout=10,
+                )
+                data = resp.json()
+
+                if resp.status_code != 200:
+                    fb_error = data.get('error', {}).get('message', '')
+                    if fb_error == 'EMAIL_EXISTS':
+                        error = 'Ce numéro de téléphone est déjà utilisé.'
+                    else:
+                        error = 'Erreur lors de la création du compte. Veuillez réessayer.'
+                else:
+                    uid = data['localId']
+                    db.collection('users').document(uid).set({
+                        'uid': uid,
+                        'firstName': name,
+                        'shopName': shop,
+                        'phoneNumber': phone,
+                        'role': 'client',
+                        'archived': False,
+                    })
+                    # Connecter directement après inscription
+                    request.session.flush()
+                    request.session['uid'] = uid
+                    request.session['shopName'] = shop
+                    request.session['phoneNumber'] = phone
+                    request.session['firstName'] = name
+                    request.session['role'] = 'client'
+                    messages.success(request, f'Bienvenue {name} ! Votre compte a été créé.')
+                    return redirect('dashboard:index')
+
+            except Exception as e:
+                logger.exception('Erreur inscription : %s', e)
+                error = 'Une erreur est survenue. Veuillez réessayer.'
+
+    return render(request, 'authentication/register.html', {'form': form, 'error': error})
 
 
 @require_http_methods(['GET', 'POST'])
