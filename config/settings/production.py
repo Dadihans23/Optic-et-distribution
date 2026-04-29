@@ -14,17 +14,20 @@ ALLOWED_HOSTS = config(
     default='.onrender.com'
 ).split(',')
 
-# Sécurité
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# Sécurité — mettre HTTPS=true dans .env une fois SSL configuré
+_HTTPS = config('HTTPS', default='false').lower() == 'true'
+
+SESSION_COOKIE_SECURE = _HTTPS
+CSRF_COOKIE_SECURE = _HTTPS
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_SECONDS = 31536000 if _HTTPS else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = _HTTPS
 
-# Proxy Render (nécessaire pour que HTTPS soit bien détecté)
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# Proxy SSL (actif seulement si HTTPS=true)
+if _HTTPS:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Fichiers statiques — WhiteNoise sert les fichiers directement avec compression
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
