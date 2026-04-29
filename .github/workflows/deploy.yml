@@ -2,7 +2,7 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: [ main ]
+    branches: [ prod ]
 
 jobs:
   deploy:
@@ -20,7 +20,7 @@ jobs:
             cd /home/hans/Optic-et-distribution
 
             # Récupérer les dernières modifications
-            git pull origin main
+            git pull origin prod
 
             # Activer le venv
             source venv/bin/activate
