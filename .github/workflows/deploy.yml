@@ -18,7 +18,7 @@ jobs:
 
       - name: Deploy
         run: |
-          ssh -i ~/.ssh/deploy_key -T ${{ secrets.VPS_USER }}@79.143.190.190 \
+          ssh -i ~/.ssh/deploy_key -T hans@79.143.190.190 \
             "cd /home/hans/Optic-et-distribution && \
              git pull origin prod && \
              source venv/bin/activate && \
