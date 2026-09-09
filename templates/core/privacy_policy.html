@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Politique de confidentialité — Optic Vision</title>
+  <meta name="description" content="Politique de confidentialité de l'application Optic Vision, éditée par Optique &amp; Distribution." />
+  <meta name="robots" content="index, follow" />
+  <link href="{% static 'css/tailwind.css' %}" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-700">
+
+  <header class="bg-sidebar">
+    <div class="max-w-3xl mx-auto px-5 py-6 flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-lg shrink-0">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+        </svg>
+      </div>
+      <div>
+        <p class="text-white font-bold text-sm leading-tight">
+          <span class="text-accent">O</span>ptique
+          <span class="text-white/50 mx-0.5">&amp;</span>
+          <span class="text-accent">D</span>istribution
+        </p>
+        <p class="text-slate-400 text-[11px]">Application Optic Vision</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-5 py-10 sm:py-14">
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-1">Politique de confidentialité</h1>
+    <p class="text-slate-400 text-sm mb-10">Dernière mise à jour : 9 septembre 2026</p>
+
+    <div class="space-y-10 text-sm sm:text-[15px] leading-relaxed">
+
+      <section>
+        <p>
+          La présente politique de confidentialité décrit comment <strong>Optique &amp; Distribution</strong>
+          (« nous »), éditeur de l'application mobile <strong>Optic Vision</strong> (« l'application »),
+          collecte, utilise, conserve et protège les données personnelles des boutiques opticiennes
+          partenaires et de leurs utilisateurs (« vous ») lors de l'utilisation de l'application.
+        </p>
+        <p class="mt-3">
+          Optic Vision est une application professionnelle (B2B) destinée exclusivement aux boutiques
+          opticiennes partenaires du réseau Optique &amp; Distribution, pour la passation et le suivi de
+          commandes de verres optiques et de bons de livraison. Elle n'est pas destinée au grand public.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-3">1. Données que nous collectons</h2>
+        <ul class="list-disc pl-5 space-y-2">
+          <li><strong>Données d'identification et de compte :</strong> nom de la boutique, numéro de téléphone (utilisé comme identifiant de connexion), mot de passe.</li>
+          <li><strong>Données de commande :</strong> nom du porteur de lunettes et données de prescription optique (sphère, cylindre, axe, addition pour chaque œil), type de verre, options de traitement, statut de la commande.</li>
+          <li><strong>Données de livraison :</strong> informations liées aux demandes de bons de livraison.</li>
+          <li><strong>Données techniques :</strong> identifiant de l'appareil et jeton de notification push (via Firebase Cloud Messaging et OneSignal), afin de vous envoyer des notifications relatives à vos commandes.</li>
+        </ul>
+        <p class="mt-3">
+          Les données de prescription optique sont fournies volontairement par la boutique partenaire dans le
+          cadre de la commande et sont utilisées uniquement à des fins de fabrication et de livraison du
+          produit commandé. Nous ne collectons aucune donnée médicale directement auprès des porteurs de
+          lunettes eux-mêmes.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-3">2. Comment nous utilisons ces données</h2>
+        <ul class="list-disc pl-5 space-y-2">
+          <li>Créer et gérer votre compte boutique et vous authentifier.</li>
+          <li>Traiter, suivre et livrer vos commandes de verres optiques et vos bons de livraison.</li>
+          <li>Vous envoyer des notifications push relatives à l'évolution du statut de vos commandes.</li>
+          <li>Assurer le support client et répondre à vos demandes.</li>
+          <li>Maintenir la sécurité, prévenir la fraude et empêcher l'accès aux données par des comptes non autorisés ou archivés.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-3">3. Partage des données</h2>
+        <p>Nous ne vendons aucune donnée personnelle. Vos données sont partagées uniquement avec :</p>
+        <ul class="list-disc pl-5 space-y-2 mt-2">
+          <li><strong>Google Firebase</strong> (Authentification, Cloud Firestore, Cloud Functions, Cloud Messaging) — hébergement et infrastructure technique de l'application.</li>
+          <li><strong>OneSignal</strong> — service tiers utilisé pour l'envoi des notifications push.</li>
+          <li>Les administrateurs autorisés d'Optique &amp; Distribution, dans le cadre du traitement de vos commandes.</li>
+        </ul>
+        <p class="mt-3">Ces prestataires n'utilisent vos données que pour fournir les services pour lesquels nous les employons, conformément à leurs propres politiques de confidentialité.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-3">4. Conservation des données</h2>
+        <p>
+          Vos données sont conservées tant que votre compte est actif, afin de maintenir l'historique de vos
+          commandes. Un compte archivé n'est plus accessible pour la connexion, mais l'historique des
+          commandes associées peut être conservé à des fins comptables et de traçabilité commerciale.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-3">5. Sécurité</h2>
+        <p>
+          Les données transitent de manière chiffrée (HTTPS/TLS) entre l'application et nos serveurs. L'accès
+          aux données est restreint par un système de rôles (boutique / administrateur) appliqué côté serveur
+          via les règles de sécurité Firebase, et l'accès administrateur est protégé par une authentification
+          supplémentaire.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-3">6. Vos droits</h2>
+        <p>Vous pouvez à tout moment nous contacter pour :</p>
+        <ul class="list-disc pl-5 space-y-2 mt-2">
+          <li>Demander l'accès aux données associées à votre compte ;</li>
+          <li>Demander la correction de données inexactes ;</li>
+          <li>Demander la suppression de votre compte et des données associées, sous réserve des obligations légales de conservation (comptabilité, RCCM) ;</li>
+          <li>Retirer votre consentement aux notifications push (paramètres de l'appareil).</li>
+        </ul>
+        <p class="mt-3">Pour exercer ces droits, contactez-nous à l'adresse indiquée en section 8.</p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-3">7. Confidentialité des mineurs</h2>
+        <p>
+          Optic Vision est une application professionnelle réservée aux boutiques opticiennes partenaires.
+          Elle n'est pas destinée aux enfants et nous ne collectons pas sciemment de données concernant des
+          mineurs.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-3">8. Nous contacter</h2>
+        <p>
+          Pour toute question relative à cette politique de confidentialité ou à vos données personnelles :
+        </p>
+        <ul class="list-disc pl-5 space-y-1 mt-2">
+          <li>Email : <a href="mailto:Dadihans06@gmail.com" class="text-primary font-medium hover:underline">Dadihans06@gmail.com</a></li>
+          <li>Téléphone : (225) 01 01 28 16 80 / 07 07 15 23 06</li>
+          <li>Adresse : Yopougon Keneya, Immeuble en face de Cosmos, Abidjan, Côte d'Ivoire</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-bold text-slate-900 mb-3">9. Modifications de cette politique</h2>
+        <p>
+          Cette politique de confidentialité peut être mise à jour périodiquement. La date de dernière mise à
+          jour est indiquée en haut de cette page. Nous vous invitons à la consulter régulièrement.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="border-t border-slate-200 py-6">
+    <p class="text-center text-slate-400 text-xs">© 2026 Optique &amp; Distribution — Tous droits réservés.</p>
+  </footer>
+
+</body>
+</html>

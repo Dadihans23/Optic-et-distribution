@@ -15,6 +15,7 @@ def landing_page(request):
 urlpatterns = [
     path('', root_redirect, name='root'),
     path('landing/', landing_page, name='landing'),
+    path('', include('apps.core.urls')),
     path('', include('apps.authentication.urls')),
     path('tableau-de-bord/', include('apps.dashboard.urls')),
     path('commandes/', include('apps.orders.urls')),
