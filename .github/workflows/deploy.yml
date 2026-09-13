@@ -20,7 +20,8 @@ jobs:
         run: |
           ssh -i ~/.ssh/deploy_key -T hans@79.143.190.190 \
             "cd /home/hans/Optic-et-distribution && \
-             git pull origin prod && \
+             git fetch origin prod && \
+             git reset --hard origin/prod && \
              source venv/bin/activate && \
              pip install -r requirements.txt --quiet && \
              DJANGO_SETTINGS_MODULE=config.settings.production python manage.py collectstatic --no-input && \
