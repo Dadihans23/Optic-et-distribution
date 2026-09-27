@@ -9,7 +9,13 @@ def root_redirect(request):
 
 
 def landing_page(request):
-    return render(request, 'landing.html')
+    context = {
+        'stat_shops': 0,  # TODO: valeur réelle à fournir par le client
+        'stat_orders': 0,  # TODO: valeur réelle à fournir par le client
+        'stat_pdf_percent': 0,  # TODO: valeur réelle à fournir par le client
+        'playstore_url': '#',  # TODO: valeur réelle à fournir par le client
+    }
+    return render(request, 'landing.html', context)
 
 
 urlpatterns = [
