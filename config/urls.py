@@ -1,5 +1,11 @@
 from django.urls import path, include
 from django.shortcuts import redirect, render
+from django.contrib.sitemaps.views import sitemap
+
+from apps.core.sitemaps import StaticPagesSitemap
+from apps.core.views import robots_txt
+
+sitemaps = {'static': StaticPagesSitemap}
 
 
 def root_redirect(request):
@@ -21,6 +27,9 @@ def landing_page(request):
 urlpatterns = [
     path('', root_redirect, name='root'),
     path('landing/', landing_page, name='landing'),
+    path('robots.txt', robots_txt, name='robots_txt'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
+         name='django.contrib.sitemaps.views.sitemap'),
     path('', include('apps.core.urls')),
     path('', include('apps.authentication.urls')),
     path('tableau-de-bord/', include('apps.dashboard.urls')),
