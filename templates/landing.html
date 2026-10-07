@@ -63,6 +63,37 @@
   .od-blink{animation:odBlink 1.6s infinite;}
   .od-spin-24{animation:odSpin 24s linear infinite;}
   .od-spin-40{animation:odSpin 40s linear infinite;}
+
+  /* ---------- Menu mobile (hamburger) ----------
+     Au-dessus de 1024px (lg Tailwind) : rien ne change, le bouton et le panneau
+     restent en display:none. En dessous, la nav desktop (h-5 + overflow-hidden,
+     qui masquait les liens passés à la ligne) est remplacée par le hamburger. */
+  .od-burger,.od-mnav{display:none;}
+  @media (max-width:1023.98px){
+    .od-header{flex-direction:column;align-items:center;}
+    .od-nav{display:none;}
+    .od-logo{margin-right:auto;}
+    .od-burger{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:40px;height:40px;padding:0;border-radius:9999px;background:transparent;border:1px solid rgba(255,255,255,.28);color:#fff;cursor:pointer;transition:background-color .2s,border-color .2s;}
+    .od-burger:hover,.od-burger:focus-visible{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.5);outline:none;}
+    .od-burger svg{width:18px;height:18px;}
+    .od-burger .od-ico-close{display:none;}
+    .od-menu-open .od-burger .od-ico-open{display:none;}
+    .od-menu-open .od-burger .od-ico-close{display:block;}
+    .od-menu-open .od-mnav{display:block;animation:odMnavIn .22s ease-out;}
+    .od-mnav{pointer-events:auto;width:100%;max-width:1080px;margin-top:10px;padding:8px 20px 18px;background:rgba(4,17,31,.94);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(255,255,255,.12);border-radius:24px;max-height:calc(100vh - 100px);overflow-y:auto;}
+    .od-mnav a.od-mnav-link{display:block;padding:14px 2px;border-bottom:1px solid rgba(255,255,255,.08);font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#C9D6E6;transition:color .2s;}
+    .od-mnav a.od-mnav-link:last-child{border-bottom:0;}
+    .od-mnav a.od-mnav-link:hover{color:#EF6C00;}
+    .od-mnav .od-mnav-cta{display:none;margin-top:16px;text-align:center;}
+  }
+  @media (max-width:639.98px){
+    .od-cta{display:none;}
+    .od-mnav .od-mnav-cta{display:block;}
+  }
+  @media (max-width:419.98px){
+    .od-logo-text{font-size:12px !important;}
+  }
+  @keyframes odMnavIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 </style>
 <noscript>
 <style>
@@ -77,13 +108,13 @@
   <!-- ══════════════════════════════════════════════
        HEADER
   ══════════════════════════════════════════════ -->
-  <header class="fixed top-[14px] inset-x-0 z-50 flex justify-center px-[14px] pointer-events-none">
+  <header data-od="header" class="od-header fixed top-[14px] inset-x-0 z-50 flex justify-center px-[14px] pointer-events-none">
     <div class="pointer-events-auto relative flex items-center gap-[18px] bg-[#04111F]/[.72] backdrop-blur-[14px] backdrop-saturate-[1.4] border border-white/[.12] rounded-full p-[7px] pl-[10px] max-w-[1080px] w-full overflow-hidden">
-      <a href="#top" class="flex items-center gap-2.5 shrink-0 whitespace-nowrap text-white">
+      <a href="#top" class="od-logo flex items-center gap-2.5 shrink-0 whitespace-nowrap text-white">
         <img src="{% static 'images/logo.png' %}" alt="Optique &amp; Distribution" class="w-9 h-9 rounded-full object-contain">
-        <span class="font-extrabold text-[15px] tracking-[-.01em]" style="font-variation-settings:'wdth' 110;">OPTIQUE &amp; DISTRIBUTION</span>
+        <span class="od-logo-text font-extrabold text-[15px] tracking-[-.01em]" style="font-variation-settings:'wdth' 110;">OPTIQUE &amp; DISTRIBUTION</span>
       </a>
-      <nav class="font-jbmono flex gap-[22px] flex-1 min-w-0 justify-end flex-wrap h-5 overflow-hidden text-xs tracking-[.06em] uppercase whitespace-nowrap text-[#C9D6E6]">
+      <nav class="od-nav font-jbmono flex gap-[22px] flex-1 min-w-0 justify-end flex-wrap h-5 overflow-hidden text-xs tracking-[.06em] uppercase whitespace-nowrap text-[#C9D6E6]">
         <a href="#pour-qui" class="hover:text-accent transition-colors">Pour qui</a>
         <a href="#avant" class="hover:text-accent transition-colors">Avant / après</a>
         <a href="#parcours" class="hover:text-accent transition-colors">Parcours</a>
@@ -92,11 +123,31 @@
         <a href="{% url 'authentication:login' %}" class="hover:text-accent transition-colors">Connexion</a>
       </nav>
       {% if session_uid %}
-      <a href="{% url 'dashboard:index' %}" class="shrink-0 whitespace-nowrap bg-accent text-[#04111F] font-extrabold text-sm px-[18px] py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Tableau de bord</a>
+      <a href="{% url 'dashboard:index' %}" class="od-cta shrink-0 whitespace-nowrap bg-accent text-[#04111F] font-extrabold text-sm px-[18px] py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Tableau de bord</a>
       {% else %}
-      <a href="#pour-qui" class="shrink-0 whitespace-nowrap bg-accent text-[#04111F] font-extrabold text-sm px-[18px] py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Devenir partenaire</a>
+      <a href="#pour-qui" class="od-cta shrink-0 whitespace-nowrap bg-accent text-[#04111F] font-extrabold text-sm px-[18px] py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Devenir partenaire</a>
       {% endif %}
+      <button type="button" data-od="burger" class="od-burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="od-mnav">
+        <svg class="od-ico-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="od-ico-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
       <div data-od="prog" class="absolute left-0 right-0 bottom-0 h-0.5 bg-primary origin-left scale-x-0"></div>
+    </div>
+    <!-- Panneau du menu mobile : display:none au-dessus de 1024px (voir <style>) -->
+    <div id="od-mnav" data-od="mnav" class="od-mnav">
+      <div class="od-mnav-links">
+        <a href="#pour-qui" class="od-mnav-link">Pour qui</a>
+        <a href="#avant" class="od-mnav-link">Avant / après</a>
+        <a href="#parcours" class="od-mnav-link">Parcours</a>
+        <a href="#outil" class="od-mnav-link">L'outil</a>
+        <a href="#contact" class="od-mnav-link">Contact</a>
+        <a href="{% url 'authentication:login' %}" class="od-mnav-link">Connexion</a>
+      </div>
+      {% if session_uid %}
+      <a href="{% url 'dashboard:index' %}" class="od-mnav-cta bg-accent text-[#04111F] font-extrabold text-sm px-[18px] py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Tableau de bord</a>
+      {% else %}
+      <a href="#pour-qui" class="od-mnav-cta bg-accent text-[#04111F] font-extrabold text-sm px-[18px] py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Devenir partenaire</a>
+      {% endif %}
     </div>
   </header>
 
@@ -904,6 +955,39 @@
     wordmark.addEventListener('pointerleave', function(){
       wordmark.style.setProperty('--wr', '0px');
     });
+  }
+
+  // ---------- 11. Menu mobile (hamburger) ----------
+  // Visible uniquement sous 1024px (media queries du <style>) : la classe
+  // .od-menu-open sur <header> affiche le panneau et bascule l'icône ☰ / ✕.
+  var odHeader = root.querySelector('[data-od="header"]');
+  var burger = root.querySelector('[data-od="burger"]');
+  var mnav = root.querySelector('[data-od="mnav"]');
+
+  if (odHeader && burger && mnav) {
+    function setMenu(open){
+      odHeader.classList.toggle('od-menu-open', open);
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      burger.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+    }
+    burger.addEventListener('click', function(){
+      setMenu(!odHeader.classList.contains('od-menu-open'));
+    });
+    mnav.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){ setMenu(false); });
+    });
+    document.addEventListener('click', function(e){
+      if (odHeader.classList.contains('od-menu-open') && !odHeader.contains(e.target)) setMenu(false);
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && odHeader.classList.contains('od-menu-open')) { setMenu(false); burger.focus(); }
+    });
+    if (window.matchMedia) {
+      var mqDesktop = window.matchMedia('(min-width: 1024px)');
+      var onMq = function(){ if (mqDesktop.matches) setMenu(false); };
+      if (mqDesktop.addEventListener) mqDesktop.addEventListener('change', onMq);
+      else if (mqDesktop.addListener) mqDesktop.addListener(onMq);
+    }
   }
 
 })();
