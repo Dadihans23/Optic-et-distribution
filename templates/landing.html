@@ -4,8 +4,44 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Optique &amp; Distribution — Vos verres et montures, de l'ordonnance jusqu'à la livraison</title>
-<meta name="description" content="Optique & Distribution vend et distribue du matériel optique à Abidjan (Yopougon Keneya). Boutique ouverte à tous, et outil de commande pour les opticiens partenaires." />
+<title>Optique &amp; Distribution — Opticien à Yopougon, Abidjan</title>
+<meta name="description" content="Matériel optique à Yopougon, Abidjan : verres et montures pour particuliers, commande en ligne pour boutiques et opticiens partenaires en Côte d'Ivoire." />
+<link rel="canonical" href="https://optiqueetdistribution.site/" />
+<link rel="icon" type="image/png" href="{% static 'images/logo.png' %}" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="fr_FR" />
+<meta property="og:site_name" content="Optique &amp; Distribution" />
+<meta property="og:title" content="Optique &amp; Distribution — Opticien à Yopougon, Abidjan" />
+<meta property="og:description" content="Matériel optique à Yopougon, Abidjan : verres et montures pour particuliers, commande en ligne pour boutiques et opticiens partenaires en Côte d'Ivoire." />
+<meta property="og:url" content="https://optiqueetdistribution.site/" />
+<meta property="og:image" content="https://optiqueetdistribution.site{% static 'images/logo.png' %}" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Optique &amp; Distribution — Opticien à Yopougon, Abidjan" />
+<meta name="twitter:description" content="Matériel optique à Yopougon, Abidjan : verres et montures pour particuliers, commande en ligne pour boutiques et opticiens partenaires en Côte d'Ivoire." />
+<meta name="twitter:image" content="https://optiqueetdistribution.site{% static 'images/logo.png' %}" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "name": "Optique & Distribution",
+  "url": "https://optiqueetdistribution.site/",
+  "logo": "https://optiqueetdistribution.site{% static 'images/logo.png' %}",
+  "image": "https://optiqueetdistribution.site{% static 'images/logo.png' %}",
+  "description": "Distributeur de matériel optique à Yopougon, Abidjan : verres et montures pour particuliers, commande en ligne pour boutiques et opticiens partenaires.",
+  "telephone": ["+225 01 01 28 16 80", "+225 07 07 15 23 06"],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Yopougon Keneya, Immeuble en face de Cosmos",
+    "addressLocality": "Abidjan",
+    "addressCountry": "CI"
+  },
+  "identifier": {
+    "@type": "PropertyValue",
+    "propertyID": "RCCM",
+    "value": "CI-ADJ-03-2023-A10-02243"
+  }
+}
+</script>
 <link href="{% static 'css/tailwind.css' %}" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
@@ -28,6 +64,11 @@
   .od-spin-24{animation:odSpin 24s linear infinite;}
   .od-spin-40{animation:odSpin 40s linear infinite;}
 </style>
+<noscript>
+<style>
+  [data-reveal]{opacity:1 !important;transform:none !important;}
+</style>
+</noscript>
 </head>
 <body class="bg-[#071A2F] text-white">
 
@@ -50,7 +91,11 @@
         <a href="#contact" class="hover:text-accent transition-colors">Contact</a>
         <a href="{% url 'authentication:login' %}" class="hover:text-accent transition-colors">Connexion</a>
       </nav>
+      {% if session_uid %}
+      <a href="{% url 'dashboard:index' %}" class="shrink-0 whitespace-nowrap bg-accent text-[#04111F] font-extrabold text-sm px-[18px] py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Tableau de bord</a>
+      {% else %}
       <a href="#pour-qui" class="shrink-0 whitespace-nowrap bg-accent text-[#04111F] font-extrabold text-sm px-[18px] py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Devenir partenaire</a>
+      {% endif %}
       <div data-od="prog" class="absolute left-0 right-0 bottom-0 h-0.5 bg-primary origin-left scale-x-0"></div>
     </div>
   </header>
@@ -70,7 +115,7 @@
     </div>
 
     <div data-od="lenswrap" class="relative mt-12 mb-8 select-none" style="--lx:0px;--ly:0px;--r:0px">
-      <h1 aria-hidden="true" class="m-0 font-black text-[clamp(58px,11.5vw,190px)] leading-[.86] tracking-[-.045em] uppercase blur-[10px] opacity-50 text-white" style="font-variation-settings:'wdth' 125;">Voir net.<br>Livrer<br>juste.</h1>
+      <div aria-hidden="true" class="m-0 font-black text-[clamp(58px,11.5vw,190px)] leading-[.86] tracking-[-.045em] uppercase blur-[10px] opacity-50 text-white" style="font-variation-settings:'wdth' 125;">Voir net.<br>Livrer<br>juste.</div>
       <h1 class="absolute inset-0 m-0 font-black text-[clamp(58px,11.5vw,190px)] leading-[.86] tracking-[-.045em] uppercase text-white scale-[1.12] [transform-origin:var(--lx)_var(--ly)] [clip-path:circle(calc(var(--r)/1.12)_at_var(--lx)_var(--ly))]" style="font-variation-settings:'wdth' 125;">Voir <span class="text-primary">net.</span><br>Livrer<br><span class="text-accent">juste.</span></h1>
       <div class="absolute left-0 top-0 w-[calc(var(--r)*2)] h-[calc(var(--r)*2)] [transform:translate(calc(var(--lx)_-_var(--r)),calc(var(--ly)_-_var(--r)))] rounded-full border-[1.5px] border-white/85 shadow-[0_0_0_6px_rgba(30,136,229,.18),inset_0_0_50px_rgba(30,136,229,.28),0_30px_80px_rgba(0,0,0,.4)] pointer-events-none">
         <div class="absolute inset-[10px] rounded-full border border-dashed border-white/[.28] od-spin-24"></div>
@@ -146,6 +191,7 @@
       </div>
     </div>
 
+    <h2 class="sr-only">Pour qui : particuliers et boutiques opticiennes partenaires</h2>
     <div class="max-w-[1400px] mx-auto mt-[120px] flex flex-wrap gap-3 pb-[120px]">
       <div data-od="card-particuliers" class="flex-1 transition-[flex] duration-700 ease-[cubic-bezier(.7,0,.2,1)] bg-primary text-[#04111F] rounded-[28px] p-[clamp(28px,4vw,52px)] min-h-[560px] flex flex-col gap-[22px] relative overflow-hidden">
         <div class="absolute -right-[90px] -top-[90px] w-[320px] h-[320px] rounded-full border-2 border-[#04111F]/25"></div>
@@ -449,17 +495,17 @@
     <div class="max-w-[1280px] mx-auto grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))]">
       <div data-reveal="0" class="flex flex-col gap-3.5 py-7 pr-7 border-t-2 border-[#04111F] opacity-0 translate-y-[50px]">
         <span class="font-jbmono text-xs tracking-[.1em] font-bold">RÉSEAU</span>
-        <span data-count="{{ stat_shops|default:0 }}" data-suffix="" class="font-black text-[clamp(72px,9vw,140px)] leading-[.85] tracking-[-.05em] [font-variant-numeric:tabular-nums]" style="font-variation-settings:'wdth' 125;"></span>
+        <span data-count="{{ stat_shops|default:0 }}" data-suffix="" class="font-black text-[clamp(72px,9vw,140px)] leading-[.85] tracking-[-.05em] [font-variant-numeric:tabular-nums]" style="font-variation-settings:'wdth' 125;">{{ stat_shops|default:0 }}</span>
         <span class="text-[19px] font-semibold">boutiques partenaires connectées</span>
       </div>
       <div data-reveal="120" class="flex flex-col gap-3.5 py-7 pr-7 border-t-2 border-[#04111F] opacity-0 translate-y-[50px]">
         <span class="font-jbmono text-xs tracking-[.1em] font-bold">VOLUME</span>
-        <span data-count="{{ stat_orders|default:0 }}" data-suffix="" class="font-black text-[clamp(72px,9vw,140px)] leading-[.85] tracking-[-.05em] [font-variant-numeric:tabular-nums]" style="font-variation-settings:'wdth' 125;"></span>
+        <span data-count="{{ stat_orders|default:0 }}" data-suffix="" class="font-black text-[clamp(72px,9vw,140px)] leading-[.85] tracking-[-.05em] [font-variant-numeric:tabular-nums]" style="font-variation-settings:'wdth' 125;">{{ stat_orders|default:0 }}</span>
         <span class="text-[19px] font-semibold">commandes traitées</span>
       </div>
       <div data-reveal="240" class="flex flex-col gap-3.5 py-7 border-t-2 border-[#04111F] opacity-0 translate-y-[50px]">
         <span class="font-jbmono text-xs tracking-[.1em] font-bold">TRAÇABILITÉ</span>
-        <span data-count="{{ stat_pdf_percent|default:0 }}" data-suffix=" %" class="font-black text-[clamp(72px,9vw,140px)] leading-[.85] tracking-[-.05em] [font-variant-numeric:tabular-nums]" style="font-variation-settings:'wdth' 125;"></span>
+        <span data-count="{{ stat_pdf_percent|default:0 }}" data-suffix=" %" class="font-black text-[clamp(72px,9vw,140px)] leading-[.85] tracking-[-.05em] [font-variant-numeric:tabular-nums]" style="font-variation-settings:'wdth' 125;">{{ stat_pdf_percent|default:0 }} %</span>
         <span class="text-[19px] font-semibold">des bons de livraison générés automatiquement en PDF</span>
       </div>
     </div>
@@ -724,11 +770,6 @@
   var revealEls = document.querySelectorAll('[data-reveal]');
   var countEls = document.querySelectorAll('[data-count]');
 
-  countEls.forEach(function(el){
-    var suffix = el.dataset.suffix || '';
-    el.textContent = '0' + suffix;
-  });
-
   function easeOutExpo(k){ return k === 1 ? 1 : 1 - Math.pow(2, -10 * k); }
 
   function animateCount(el){
@@ -745,6 +786,13 @@
   }
 
   if ('IntersectionObserver' in window && (revealEls.length || countEls.length)) {
+    // Le HTML sert déjà la vraie valeur de chaque compteur (fallback no-JS/crawlers) ;
+    // on la remet à 0 seulement ici, pour l'effet de comptage animé au scroll.
+    countEls.forEach(function(el){
+      var suffix = el.dataset.suffix || '';
+      el.textContent = '0' + suffix;
+    });
+
     var observer = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
         if (!entry.isIntersecting) return;
@@ -766,6 +814,13 @@
 
     revealEls.forEach(function(el){ observer.observe(el); });
     countEls.forEach(function(el){ observer.observe(el); });
+  } else {
+    // Pas d'IntersectionObserver (vieux navigateur) : on affiche tout de suite
+    // plutôt que de laisser le contenu invisible pour toujours.
+    revealEls.forEach(function(el){
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
   }
 
   // ---------- 8. Audience cards hover-grow ----------
