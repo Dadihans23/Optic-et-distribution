@@ -18,6 +18,8 @@ def get_orders_by_user(uid: str, status_filter: str = None) -> list[dict]:
     orders = []
     for doc in docs:
         d = doc.to_dict()
+        if d.get('archived'):
+            continue
         d['id'] = doc.id
         orders.append(d)
     orders.sort(key=lambda x: x.get('createdAt') or datetime.min.replace(tzinfo=timezone.utc), reverse=True)
@@ -54,3 +56,24 @@ def create_order(uid: str, shop_name: str, data: dict) -> str:
     ref = db.collection('orders').document()
     ref.set(doc_data)
     return ref.id
+
+
+def update_order(order_id: str, data: dict):
+    db = _db()
+    allowed = {
+        'wearerName', 'typeVerre', 'treatmentOption',
+        'rightSph', 'rightCyl', 'rightAxe', 'rightAdd',
+        'leftSph', 'leftCyl', 'leftAxe', 'leftAdd', 'notes',
+        'indice', 'nombrePaires',
+    }
+    payload = {k: v for k, v in data.items() if k in allowed}
+    payload['updatedAt'] = datetime.now(tz=timezone.utc)
+    db.collection('orders').document(order_id).update(payload)
+
+
+def archive_order(order_id: str):
+    db = _db()
+    db.collection('orders').document(order_id).update({
+        'archived': True,
+        'updatedAt': datetime.now(tz=timezone.utc),
+    })

@@ -258,8 +258,14 @@ def admin_update_order_fields_view(request, order_id):
         'wearerName', 'typeVerre', 'treatmentOption',
         'rightSph', 'rightCyl', 'rightAxe', 'rightAdd',
         'leftSph', 'leftCyl', 'leftAxe', 'leftAdd', 'notes',
+        'indice', 'nombrePaires',
     ]
     data = {f: request.POST.get(f, '').strip() for f in fields}
+    # nombrePaires : entier >= 1 (même type que côté client / mobile)
+    try:
+        data['nombrePaires'] = max(1, int(data['nombrePaires']))
+    except (TypeError, ValueError):
+        data['nombrePaires'] = 1
     update_order_fields(order_id, data)
     messages.success(request, 'Commande mise à jour.')
     return redirect('admin_panel:order_detail', order_id=order_id)

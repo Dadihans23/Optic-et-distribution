@@ -97,6 +97,7 @@ def update_order_fields(order_id: str, data: dict):
         'wearerName', 'typeVerre', 'treatmentOption',
         'rightSph', 'rightCyl', 'rightAxe', 'rightAdd',
         'leftSph', 'leftCyl', 'leftAxe', 'leftAdd', 'notes',
+        'indice', 'nombrePaires',
     }
     payload = {k: v for k, v in data.items() if k in allowed}
     payload['updatedAt'] = datetime.now(tz=timezone.utc)
