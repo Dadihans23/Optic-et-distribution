@@ -108,6 +108,14 @@ function toggleEdit() {
           <p class="text-xs text-slate-400 mb-1">Traitement</p>
           <p class="text-slate-800 font-semibold">{{ order.treatmentOption|default:"—" }}</p>
         </div>
+        <div class="bg-slate-50 rounded-xl p-4">
+          <p class="text-xs text-slate-400 mb-1">Indice</p>
+          <p class="text-slate-800 font-semibold">{{ order.indice|default:"—" }}</p>
+        </div>
+        <div class="bg-slate-50 rounded-xl p-4">
+          <p class="text-xs text-slate-400 mb-1">Nombre de paires</p>
+          <p class="text-slate-800 font-semibold">{{ order.nombrePaires|default:"1" }}</p>
+        </div>
       </div>
     </div>
     <!-- Prescription -->
@@ -189,6 +197,23 @@ function toggleEdit() {
           <div>
             <label class="block text-xs font-medium text-slate-600 mb-1">Traitement</label>
             <input type="text" name="treatmentOption" value="{{ order.treatmentOption|default:'' }}"
+                   class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-slate-50"/>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Indice</label>
+            <select name="indice"
+                    class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-slate-50">
+              <option value="">— Sélectionner —</option>
+              <option value="1.56" {% if order.indice == '1.56' %}selected{% endif %}>1.56</option>
+              <option value="1.59" {% if order.indice == '1.59' %}selected{% endif %}>1.59</option>
+              <option value="1.60" {% if order.indice == '1.60' %}selected{% endif %}>1.60</option>
+              <option value="1.67" {% if order.indice == '1.67' %}selected{% endif %}>1.67</option>
+              <option value="1.74" {% if order.indice == '1.74' %}selected{% endif %}>1.74</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Nombre de paires</label>
+            <input type="number" name="nombrePaires" min="1" value="{{ order.nombrePaires|default:1 }}"
                    class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-slate-50"/>
           </div>
         </div>

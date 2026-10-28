@@ -8,6 +8,8 @@ TYPE_VERRE_CHOICES = [
     ('DOUBLE FOYER', 'DOUBLE FOYER'),
     ('POLYCARBONATE', 'POLYCARBONATE'),
     ('MR-8', 'MR-8'),
+    ('VISION UNIQUE', 'VISION UNIQUE'),
+    ('PROGRESSIF FF', 'PROGRESSIF FF'),
 ]
 
 TREATMENT_CHOICES = [
@@ -16,6 +18,18 @@ TREATMENT_CHOICES = [
     ('ANTIREFLET SHMC', 'ANTIREFLET SHMC'),
     ('PHOTOCHROMIQUE ANTIREFLET SHMC', 'PHOTOCHROMIQUE ANTIREFLET SHMC'),
     ('PHOTOCHROMIQUE ANTIREFLET SHMC BLUE-CUT UV420', 'PHOTOCHROMIQUE ANTIREFLET SHMC BLUE-CUT UV420'),
+    ('SOLAIRE', 'SOLAIRE'),
+    ('PHOTOCHROMIQUE ANTIREFLET SHMC BLUE-CUT REVÊTEMENT BLEU UV420', 'PHOTOCHROMIQUE ANTIREFLET SHMC BLUE-CUT REVÊTEMENT BLEU UV420'),
+    ('PHOTOCHROMIQUE MARRON ANTIREFLET SHMC', 'PHOTOCHROMIQUE MARRON ANTIREFLET SHMC'),
+]
+
+INDICE_CHOICES = [
+    ('', '— Sélectionner —'),
+    ('1.56', '1.56'),
+    ('1.59', '1.59'),
+    ('1.60', '1.60'),
+    ('1.67', '1.67'),
+    ('1.74', '1.74'),
 ]
 
 INPUT_CLASS = 'w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
@@ -28,25 +42,30 @@ class OrderForm(forms.Form):
         max_length=100,
         widget=forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Nom et prénom du porteur'}),
     )
-    typeVerre = forms.CharField(
+    typeVerre = forms.ChoiceField(
         label='Type de verre',
-        max_length=100,
         required=False,
-        widget=forms.TextInput(attrs={
-            'class': INPUT_CLASS,
-            'placeholder': 'Saisir ou choisir dans la liste',
-            'list': 'typeVerreList',
-        }),
+        choices=TYPE_VERRE_CHOICES,
+        widget=forms.Select(attrs={'class': SELECT_CLASS}),
     )
-    treatmentOption = forms.CharField(
+    treatmentOption = forms.ChoiceField(
         label='Traitement',
-        max_length=200,
         required=False,
-        widget=forms.TextInput(attrs={
-            'class': INPUT_CLASS,
-            'placeholder': 'Saisir ou choisir dans la liste',
-            'list': 'treatmentList',
-        }),
+        choices=TREATMENT_CHOICES,
+        widget=forms.Select(attrs={'class': SELECT_CLASS}),
+    )
+    indice = forms.ChoiceField(
+        label='Indice',
+        required=False,
+        choices=INDICE_CHOICES,
+        widget=forms.Select(attrs={'class': SELECT_CLASS}),
+    )
+    nombrePaires = forms.IntegerField(
+        label='Nombre de paires',
+        required=False,
+        min_value=1,
+        initial=1,
+        widget=forms.NumberInput(attrs={'class': INPUT_CLASS, 'min': 1}),
     )
     # OD
     rightSph = forms.CharField(label='Sph', max_length=10, required=False, widget=forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': '0.00'}))
@@ -64,3 +83,16 @@ class OrderForm(forms.Form):
         required=False,
         widget=forms.Textarea(attrs={'class': INPUT_CLASS, 'rows': 3, 'placeholder': 'Informations complémentaires...'}),
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Commandes historiques saisies en texte libre : on conserve leur valeur
+        # actuelle comme option (édition) pour ne pas la perdre silencieusement.
+        for name in ('typeVerre', 'treatmentOption', 'indice'):
+            current = self.initial.get(name)
+            field = self.fields[name]
+            if current and current not in {v for v, _ in field.choices}:
+                field.choices = list(field.choices) + [(current, current)]
+
+    def clean_nombrePaires(self):
+        return self.cleaned_data.get('nombrePaires') or 1

@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %}Nouvelle commande — Optic Vision{% endblock %}
+{% block title %}{% if edit_mode %}Modifier la commande{% else %}Nouvelle commande{% endif %} — Optic Vision{% endblock %}
 
 {% block content %}
 <div class="max-w-3xl mx-auto">
   <div class="flex items-center gap-3 mb-6">
-    <a href="{% url 'orders:list' %}" class="text-gray-400 hover:text-gray-600">
+    <a href="{% if edit_mode %}{% url 'orders:detail' order.id %}{% else %}{% url 'orders:list' %}{% endif %}" class="text-gray-400 hover:text-gray-600">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
       </svg>
     </a>
-    <h1 class="text-2xl font-bold text-gray-800">Nouvelle commande</h1>
+    <h1 class="text-2xl font-bold text-gray-800">{% if edit_mode %}Modifier la commande{% if order.orderNumber %} {{ order.orderNumber }}{% endif %}{% else %}Nouvelle commande{% endif %}</h1>
   </div>
 
-  <form method="post">
+  <form method="post" action="{% if edit_mode %}{% url 'orders:edit' order.id %}{% else %}{% url 'orders:create' %}{% endif %}">
     {% csrf_token %}
 
     <!-- Porteur + Type verre + Traitement -->
@@ -22,20 +22,11 @@
       <div class="grid grid-cols-1 gap-4">
         {% include 'orders/_field.html' with field=form.wearerName %}
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Type de verre</label>
-          {{ form.typeVerre }}
-          <datalist id="typeVerreList">
-            {% for val, lbl in type_verre_options %}<option value="{{ val }}">{% endfor %}
-          </datalist>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Traitement</label>
-          {{ form.treatmentOption }}
-          <datalist id="treatmentList">
-            {% for val, lbl in treatment_options %}<option value="{{ val }}">{% endfor %}
-          </datalist>
+        {% include 'orders/_field.html' with field=form.typeVerre %}
+        {% include 'orders/_field.html' with field=form.treatmentOption %}
+        <div class="grid grid-cols-2 gap-4">
+          {% include 'orders/_field.html' with field=form.indice %}
+          {% include 'orders/_field.html' with field=form.nombrePaires %}
         </div>
       </div>
     </div>
@@ -78,13 +69,13 @@
     </div>
 
     <div class="flex gap-3 justify-end">
-      <a href="{% url 'orders:list' %}"
+      <a href="{% if edit_mode %}{% url 'orders:detail' order.id %}{% else %}{% url 'orders:list' %}{% endif %}"
          class="px-5 py-2.5 border border-gray-300 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition-colors">
         Annuler
       </a>
       <button type="submit"
               class="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg text-sm font-medium transition-colors">
-        Envoyer la commande
+        {% if edit_mode %}Enregistrer les modifications{% else %}Envoyer la commande{% endif %}
       </button>
     </div>
   </form>

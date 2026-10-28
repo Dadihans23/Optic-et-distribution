@@ -136,6 +136,8 @@ def _order_card(order: dict, card_w: float) -> Table:
         Spacer(1, 6),
         Paragraph(f'<b>{order.get("treatmentOption", "—")}</b>',
                   ParagraphStyle('treat', fontSize=11, fontName='Helvetica-Bold', leading=14)),
+        Paragraph(f'Indice {order.get("indice") or "-"} · {order.get("nombrePaires") or 1} paire(s)',
+                  ParagraphStyle('indice_paires', fontSize=10, fontName='Helvetica', leading=13)),
     ]
 
     card = Table([[inner]], colWidths=[card_w])
