@@ -78,6 +78,27 @@ def _val(d: dict, key: str) -> str:
     return str(v) if v else '-'
 
 
+def _caracteristiques_line(order: dict) -> str:
+    """Ligne unique 'TYPE DE VERRE  TRAITEMENT  INDICE  N PAIRE(S)' (meme
+    police/taille pour tous les elements), identique au mobile."""
+    parts = []
+    type_verre = (order.get('typeVerre') or '').strip()
+    if type_verre:
+        parts.append(type_verre)
+    treatment = (order.get('treatmentOption') or '').strip()
+    if treatment:
+        parts.append(treatment)
+    indice = str(order.get('indice') or '').strip()
+    if indice:
+        parts.append(indice)
+    try:
+        nombre_paires = int(order.get('nombrePaires') or 1)
+    except (TypeError, ValueError):
+        nombre_paires = 1
+    parts.append(f"{nombre_paires} {'PAIRES' if nombre_paires > 1 else 'PAIRE'}")
+    return '  '.join(parts)
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # FICHE FINALE COMMANDES
 # Source : all_orders_screen_admin.dart → _generatePdfBytes()
@@ -134,10 +155,8 @@ def _order_card(order: dict, card_w: float) -> Table:
         Spacer(1, 6),
         presc,
         Spacer(1, 6),
-        Paragraph(f'<b>{order.get("treatmentOption", "—")}</b>',
-                  ParagraphStyle('treat', fontSize=11, fontName='Helvetica-Bold', leading=14)),
-        Paragraph(f'Indice {order.get("indice") or "-"} · {order.get("nombrePaires") or 1} paire(s)',
-                  ParagraphStyle('indice_paires', fontSize=10, fontName='Helvetica', leading=13)),
+        Paragraph(f'<b>{_caracteristiques_line(order)}</b>',
+                  ParagraphStyle('carac', fontSize=11, fontName='Helvetica-Bold', leading=14)),
     ]
 
     card = Table([[inner]], colWidths=[card_w])
