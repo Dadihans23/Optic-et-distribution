@@ -2,12 +2,7 @@ from django import forms
 
 TYPE_VERRE_CHOICES = [
     ('', '— Sélectionner —'),
-    ('UNIFOCAUX', 'UNIFOCAUX'),
-    ('PROGRESSIF', 'PROGRESSIF'),
-    ('PROGRESSIF FREE-FORM', 'PROGRESSIF FREE-FORM'),
     ('DOUBLE FOYER', 'DOUBLE FOYER'),
-    ('POLYCARBONATE', 'POLYCARBONATE'),
-    ('MR-8', 'MR-8'),
     ('VISION UNIQUE', 'VISION UNIQUE'),
     ('PROGRESSIF FF', 'PROGRESSIF FF'),
 ]
@@ -17,7 +12,6 @@ TREATMENT_CHOICES = [
     ('BLANC', 'BLANC'),
     ('ANTIREFLET SHMC', 'ANTIREFLET SHMC'),
     ('PHOTOCHROMIQUE ANTIREFLET SHMC', 'PHOTOCHROMIQUE ANTIREFLET SHMC'),
-    ('PHOTOCHROMIQUE ANTIREFLET SHMC BLUE-CUT UV420', 'PHOTOCHROMIQUE ANTIREFLET SHMC BLUE-CUT UV420'),
     ('SOLAIRE', 'SOLAIRE'),
     ('PHOTOCHROMIQUE ANTIREFLET SHMC BLUE-CUT REVÊTEMENT BLEU UV420', 'PHOTOCHROMIQUE ANTIREFLET SHMC BLUE-CUT REVÊTEMENT BLEU UV420'),
     ('PHOTOCHROMIQUE MARRON ANTIREFLET SHMC', 'PHOTOCHROMIQUE MARRON ANTIREFLET SHMC'),
@@ -65,7 +59,7 @@ class OrderForm(forms.Form):
         required=False,
         min_value=1,
         initial=1,
-        widget=forms.NumberInput(attrs={'class': INPUT_CLASS, 'min': 1}),
+        widget=forms.NumberInput(attrs={'class': INPUT_CLASS, 'min': 1, 'placeholder': '2 paires'}),
     )
     # OD
     rightSph = forms.CharField(label='Sph', max_length=10, required=False, widget=forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': '0.00'}))
