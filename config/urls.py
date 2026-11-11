@@ -1,6 +1,7 @@
 from django.urls import path, include
 from django.shortcuts import redirect, render
 from django.contrib.sitemaps.views import sitemap
+from decouple import config
 
 from apps.core.sitemaps import StaticPagesSitemap
 from apps.core.views import robots_txt
@@ -19,7 +20,8 @@ def landing_page(request):
         'stat_shops': 0,  # TODO: valeur réelle à fournir par le client
         'stat_orders': 0,  # TODO: valeur réelle à fournir par le client
         'stat_pdf_percent': 0,  # TODO: valeur réelle à fournir par le client
-        'playstore_url': 'https://play.google.com/store/apps/details?id=com.monapp2.optic_vision&hl=fr_CH',
+        # APK servi directement par Nginx sur le VPS (hors du dépôt git)
+        'apk_url': config('APK_URL', default='/telecharger/optic-vision.apk'),
     }
     return render(request, 'landing.html', context)
 

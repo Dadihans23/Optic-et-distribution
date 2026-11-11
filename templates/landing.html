@@ -528,13 +528,16 @@
           </div>
           <div data-od="active-label" class="absolute right-[2%] bottom-[10%] bg-accent text-[#04111F] font-jbmono text-xs font-bold px-3 py-2 rounded-lg tracking-[.04em]">COMMANDE DIGITALE</div>
         </div>
-        <a href="{{ playstore_url|default:'#' }}" class="flex items-center gap-3.5 border-[1.5px] border-white/30 rounded-2xl px-5 py-3 text-white hover:border-accent transition-colors">
-          <span class="w-2.5 h-2.5 rounded-full bg-[#3DDC84]"></span>
-          <span class="flex flex-col leading-[1.15]">
-            <span class="font-jbmono text-[11px] text-[#9FB3CB] tracking-[.06em]">APPLICATION MOBILE</span>
-            <span class="font-extrabold text-lg">Disponible sur Android</span>
-          </span>
-        </a>
+        <div class="flex flex-col gap-2">
+          <a href="{{ apk_url }}" download class="flex items-center gap-3.5 border-[1.5px] border-white/30 rounded-2xl px-5 py-3 text-white hover:border-accent transition-colors">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#3DDC84]"></span>
+            <span class="flex flex-col leading-[1.15]">
+              <span class="font-jbmono text-[11px] text-[#9FB3CB] tracking-[.06em]">APPLICATION ANDROID · APK</span>
+              <span class="font-extrabold text-lg">Télécharger l'application</span>
+            </span>
+          </a>
+          <p class="m-0 text-xs leading-[1.5] text-[#9FB3CB] max-w-[22em]">Après le téléchargement, ouvrez le fichier et autorisez l'installation depuis cette source si Android le demande.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -596,7 +599,7 @@
         <p class="m-0 text-[15px] leading-[1.55] max-w-[26em]">Vente et distribution d'équipements optiques à Abidjan. Boutique ouverte aux particuliers et fournisseur des boutiques opticiennes partenaires.</p>
         <div class="flex gap-2 flex-wrap">
           <a href="#pour-qui" class="bg-accent text-[#04111F] font-extrabold text-sm px-4 py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Devenir partenaire</a>
-          <a href="{{ playstore_url|default:'#' }}" class="border border-white/30 text-white font-bold text-sm px-[15px] py-2.5 rounded-full hover:border-accent transition-colors">App Android</a>
+          <a href="{{ apk_url }}" download class="border border-white/30 text-white font-bold text-sm px-[15px] py-2.5 rounded-full hover:border-accent transition-colors">Télécharger l'APK</a>
         </div>
       </div>
       <div class="flex flex-col gap-2.5 text-[15px]">
@@ -621,7 +624,7 @@
         <a href="#outil" class="hover:text-accent transition-colors">Suivi en temps réel</a>
         <a href="#outil" class="hover:text-accent transition-colors">Historique</a>
         <a href="#outil" class="hover:text-accent transition-colors">Notifications</a>
-        <a href="{{ playstore_url|default:'#' }}" class="hover:text-accent transition-colors">Application Android</a>
+        <a href="{{ apk_url }}" download class="hover:text-accent transition-colors">Application Android</a>
       </div>
       <div class="flex flex-col gap-2.5 text-[15px]">
         <span class="font-jbmono text-[11px] tracking-[.12em] text-[#7FB8F0] mb-1.5">CONTACT</span>
