@@ -1,0 +1,113 @@
+{# PWA : enregistrement du service worker + boutons [data-pwa-install]                      #}
+{#  - data-pwa-install           : clic = installation (ou aide si l'installation directe   #}
+{#                                 n'est pas disponible). Masqué si déjà installée.          #}
+{#  - data-pwa-optional          : masqué tant que l'installation n'est pas possible.        #}
+{#  - data-apk="URL"             : lien APK proposé en secours sur Android.                  #}
+{% load static %}
+<script>
+(function () {
+  var ICON = '{% static 'images/pwa/icon-192.png' %}';
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () {});
+    });
+  }
+
+  var deferred = null;
+  var ua = navigator.userAgent || '';
+  var isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var isAndroid = /android/i.test(ua);
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+
+  function refresh() {
+    document.querySelectorAll('[data-pwa-install]').forEach(function (el) {
+      if (standalone) { el.style.display = 'none'; return; }
+      if (el.hasAttribute('data-pwa-optional')) {
+        el.style.display = (deferred || isIOS) ? '' : 'none';
+      }
+    });
+  }
+
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    deferred = e;
+    refresh();
+  });
+  window.addEventListener('appinstalled', function () {
+    deferred = null;
+    standalone = true;
+    refresh();
+  });
+  document.addEventListener('DOMContentLoaded', refresh);
+
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest && e.target.closest('[data-pwa-install]');
+    if (!el) return;
+    e.preventDefault();
+    var apk = el.getAttribute('data-apk');
+    if (deferred) {
+      var p = deferred;
+      Promise.resolve()
+        .then(function () { return p.prompt(); })
+        .then(function () { return p.userChoice; })
+        .then(function () { deferred = null; refresh(); })
+        .catch(function () { showHelp(apk); });
+      return;
+    }
+    showHelp(apk);
+  });
+
+  function showHelp(apkUrl) {
+    var old = document.getElementById('od-pwa-help');
+    if (old) old.remove();
+
+    var steps;
+    if (isIOS) {
+      steps = '<p style="margin:0 0 10px">Sur iPhone / iPad, dans <b>Safari</b> :</p>' +
+        '<ol style="margin:0;padding-left:20px;line-height:1.7">' +
+        '<li>Touchez le bouton <b>Partager</b> <span aria-hidden="true">(carré avec une flèche ↑)</span></li>' +
+        '<li>Choisissez <b>« Sur l\u2019écran d\u2019accueil »</b></li>' +
+        '<li>Touchez <b>Ajouter</b></li></ol>';
+    } else if (isAndroid) {
+      steps = '<p style="margin:0 0 10px">Dans <b>Chrome</b> :</p>' +
+        '<ol style="margin:0;padding-left:20px;line-height:1.7">' +
+        '<li>Ouvrez le menu <b>⋮</b> en haut à droite</li>' +
+        '<li>Choisissez <b>« Installer l\u2019application »</b> ou <b>« Ajouter à l\u2019écran d\u2019accueil »</b></li></ol>';
+      if (apkUrl) {
+        steps += '<p style="margin:16px 0 0;font-size:14px;color:#4B5B70">Vous préférez l\u2019application Android complète ? ' +
+          '<a href="' + apkUrl + '" download style="color:#1E88E5;font-weight:700">Télécharger l\u2019APK</a></p>';
+      }
+    } else {
+      steps = '<p style="margin:0">Dans <b>Chrome</b> ou <b>Edge</b>, cliquez sur l\u2019icône d\u2019installation ' +
+        '<span aria-hidden="true">(⊕)</span> à droite de la barre d\u2019adresse, ou ouvrez le menu puis ' +
+        '<b>« Installer Optique &amp; Distribution »</b>.</p>' +
+        '<p style="margin:12px 0 0;font-size:14px;color:#4B5B70">Sur téléphone, ouvrez ce site dans Chrome (Android) ou Safari (iPhone).</p>';
+    }
+
+    var wrap = document.createElement('div');
+    wrap.id = 'od-pwa-help';
+    wrap.setAttribute('role', 'dialog');
+    wrap.setAttribute('aria-modal', 'true');
+    wrap.setAttribute('aria-label', 'Installer l\u2019application');
+    wrap.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(4,17,31,.6);display:flex;align-items:flex-end;justify-content:center;padding:16px;';
+    wrap.innerHTML =
+      '<div style="width:100%;max-width:420px;background:#fff;color:#071A2F;border-radius:20px;padding:24px 20px 20px;' +
+      'font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:15px;box-shadow:0 20px 50px rgba(0,0,0,.25);margin-bottom:env(safe-area-inset-bottom)">' +
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">' +
+      '<img src="' + ICON + '" alt="" width="44" height="44" style="border-radius:10px">' +
+      '<div><div style="font-weight:800;font-size:17px">Installer l\u2019application</div>' +
+      '<div style="font-size:13px;color:#4B5B70">Accès direct depuis votre écran d\u2019accueil</div></div></div>' +
+      steps +
+      '<button type="button" data-close style="margin-top:20px;width:100%;border:0;border-radius:999px;padding:13px;' +
+      'background:#1E88E5;color:#fff;font-weight:700;font-size:15px;cursor:pointer">J\u2019ai compris</button></div>';
+    wrap.addEventListener('click', function (e) {
+      if (e.target === wrap || e.target.hasAttribute('data-close')) wrap.remove();
+    });
+    document.addEventListener('keydown', function esc(e) {
+      if (e.key === 'Escape') { wrap.remove(); document.removeEventListener('keydown', esc); }
+    });
+    document.body.appendChild(wrap);
+    wrap.querySelector('[data-close]').focus();
+  }
+})();
+</script>

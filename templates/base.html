@@ -19,6 +19,7 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
   </style>
+  {% include 'partials/_pwa_head.html' %}
   {% block extra_css %}{% endblock %}
 </head>
 <body class="bg-slate-50 min-h-screen">
@@ -90,6 +91,14 @@
           </svg>
           <span class="text-slate-400 font-medium">Bons de livraison</span>
         </a>
+
+        <button type="button" data-pwa-install data-pwa-optional style="display:none"
+                class="sidebar-link w-full mt-4 flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-left border border-primary/30">
+          <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14"/>
+          </svg>
+          <span class="text-slate-300 font-medium">Installer l'application</span>
+        </button>
       </nav>
 
       <!-- User / Logout -->
@@ -173,6 +182,7 @@
     document.getElementById('sidebarOverlay').classList.add('hidden');
   }
 </script>
+{% include 'partials/_pwa_scripts.html' %}
 {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -1,0 +1,33 @@
+{% load static %}<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex"/>
+  <meta name="theme-color" content="#1E88E5"/>
+  <title>Hors connexion — Optique &amp; Distribution</title>
+  <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}"/>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;
+         background:#F4F6F9;color:#071A2F;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+    .card{width:100%;max-width:380px;background:#fff;border-radius:20px;padding:32px 24px;text-align:center;
+          box-shadow:0 10px 30px rgba(7,26,47,.08)}
+    img{width:88px;height:88px;border-radius:18px}
+    h1{font-size:20px;margin:20px 0 8px}
+    p{margin:0 0 24px;color:#4B5B70;font-size:15px;line-height:1.5}
+    button{appearance:none;border:0;cursor:pointer;width:100%;padding:14px 18px;border-radius:999px;
+           background:#1E88E5;color:#fff;font-size:15px;font-weight:700}
+    button:active{background:#1565C0}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <img src="{% static 'images/logo.png' %}" alt="Optique &amp; Distribution"/>
+    <h1>Pas de connexion internet</h1>
+    <p>Vérifiez votre connexion (données mobiles ou Wi-Fi), puis réessayez. Vos commandes sont en sécurité.</p>
+    <button type="button" onclick="location.reload()">Réessayer</button>
+  </main>
+  <script>window.addEventListener('online', function () { location.reload(); });</script>
+</body>
+</html>

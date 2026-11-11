@@ -100,6 +100,7 @@
   [data-reveal]{opacity:1 !important;transform:none !important;}
 </style>
 </noscript>
+{% include 'partials/_pwa_head.html' %}
 </head>
 <body class="bg-[#071A2F] text-white">
 
@@ -125,7 +126,7 @@
       {% if session_uid %}
       <a href="{% url 'dashboard:index' %}" class="od-cta shrink-0 whitespace-nowrap bg-accent text-[#04111F] font-extrabold text-sm px-[18px] py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Tableau de bord</a>
       {% else %}
-      <a href="{{ apk_url }}" download class="od-cta shrink-0 whitespace-nowrap bg-accent text-[#04111F] font-extrabold text-sm px-[18px] py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Télécharger l'app</a>
+      <a href="{{ apk_url }}" data-pwa-install data-apk="{{ apk_url }}" class="od-cta shrink-0 whitespace-nowrap bg-accent text-[#04111F] font-extrabold text-sm px-[18px] py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Installer l'app</a>
       {% endif %}
       <button type="button" data-od="burger" class="od-burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="od-mnav">
         <svg class="od-ico-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -146,7 +147,7 @@
       {% if session_uid %}
       <a href="{% url 'dashboard:index' %}" class="od-mnav-cta bg-accent text-[#04111F] font-extrabold text-sm px-[18px] py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Tableau de bord</a>
       {% else %}
-      <a href="{{ apk_url }}" download class="od-mnav-cta bg-accent text-[#04111F] font-extrabold text-sm px-[18px] py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Télécharger l'app</a>
+      <a href="{{ apk_url }}" data-pwa-install data-apk="{{ apk_url }}" class="od-mnav-cta bg-accent text-[#04111F] font-extrabold text-sm px-[18px] py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Installer l'app</a>
       {% endif %}
     </div>
   </header>
@@ -598,7 +599,7 @@
         </div>
         <p class="m-0 text-[15px] leading-[1.55] max-w-[26em]">Vente et distribution d'équipements optiques à Abidjan. Boutique ouverte aux particuliers et fournisseur des boutiques opticiennes partenaires.</p>
         <div class="flex gap-2 flex-wrap">
-          <a href="{{ apk_url }}" download class="bg-accent text-[#04111F] font-extrabold text-sm px-4 py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Télécharger l'app</a>
+          <a href="{{ apk_url }}" data-pwa-install data-apk="{{ apk_url }}" class="bg-accent text-[#04111F] font-extrabold text-sm px-4 py-[11px] rounded-full hover:bg-white hover:text-[#04111F] transition-colors">Installer l'app</a>
         </div>
       </div>
       <div class="flex flex-col gap-2.5 text-[15px]">
@@ -994,5 +995,6 @@
 
 })();
 </script>
+{% include 'partials/_pwa_scripts.html' %}
 </body>
 </html>
